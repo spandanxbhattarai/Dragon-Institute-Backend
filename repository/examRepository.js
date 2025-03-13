@@ -57,7 +57,9 @@ export const getExamsForStudent = async (courseEnrolled, plan, currentTime) => {
 
     // Query for exams
     let exams = await Exam.find(baseQuery)
-      .sort({ startTime: 1 });
+    .select('title description startTime endTime questionSheet createdAt updatedAt') 
+    .sort({ startTime: 1 });
+
 
     
     // Modify the results to exclude questionSheet if exam hasn't started

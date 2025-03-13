@@ -1,9 +1,9 @@
 import * as questionSheetRepository from '../repository/questionSheetRepository.js';
 import { addExamResults } from '../repository/userRepository.js';
 
-export async function getAllQuestionSheets() {
+export async function getAllQuestionSheets(fields) {
   try {
-    return await questionSheetRepository.findAllQuestionSheets();
+    return await questionSheetRepository.findAllQuestionSheets(fields);
   } catch (error) {
     throw error;
   }
@@ -100,12 +100,15 @@ export async function deleteQuestionSheet(id) {
 }
 
 export async function calculateScoreAndPercentage(questionSheetId, userAnswers, userId, examTitle) {
-  const questionSheet = await questionSheetRepository.findQuestionSheetById(questionSheetId);
+  const questionSheet = await questionSheetRepository.findQuestionSheetsById(questionSheetId);
   if (!questionSheet) {
     throw new Error('Question sheet not found');
   }
 
   let correctAnswersCount = 0;
+
+  console.log(userAnswers)
+  console.log(questionSheet)
 
   // Iterate over each question from the frontend and compare with the stored data
   for (let i = 0; i < userAnswers.length; i++) {
@@ -116,6 +119,7 @@ export async function calculateScoreAndPercentage(questionSheetId, userAnswers, 
       correctAnswersCount++;
     }
   }
+
 
   const totalQuestions = questionSheet.questions.length;
   const percentage = (correctAnswersCount / totalQuestions) * 100;

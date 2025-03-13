@@ -1,8 +1,9 @@
 import { QuestionSheet } from '../models/questionSheet.js';
 
-export async function findAllQuestionSheets() {
+export async function findAllQuestionSheets(fields) {
   try {
-    return await QuestionSheet.find();
+    const selectFields = fields && fields.length > 0  ? fields.split(',').join(' ') : '';
+    return await QuestionSheet.find().select(selectFields);
   } catch (error) {
     throw new Error(`Error fetching question sheets: ${error.message}`);
   }
@@ -11,10 +12,20 @@ export async function findAllQuestionSheets() {
 export async function findQuestionSheetById(id) {
   try {
     const questionSheet = await QuestionSheet.findById(id)
-      .populate({
-        path: 'questions',
-        select: '-correctAnswer' 
-      });
+    .select({
+      'questions.correctAnswer': 0 // Exclude correctAnswer field from questions
+    });
+
+    return questionSheet;
+  } catch (error) {
+    throw new Error(`Error fetching question sheet: ${error.message}`);
+  }
+}
+
+export async function findQuestionSheetsById(id) {
+  try {
+    const questionSheet = await QuestionSheet.findById(id);
+
     return questionSheet;
   } catch (error) {
     throw new Error(`Error fetching question sheet: ${error.message}`);

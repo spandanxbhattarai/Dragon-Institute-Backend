@@ -11,7 +11,7 @@ export async function findAllCourses(fields = [], pages, pageLimits) {
 
   const selectFields = fields.length > 0  ? fields.split(',').join(' ') : '';
 
-
+  console.log(selectFields)
   const courses = await Course.find({}, projection)
   .select(selectFields)
     .skip(skip)

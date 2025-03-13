@@ -28,6 +28,10 @@ const questionSchema = new mongoose.Schema({
 }, { id: false }); // Disable the _id field for questions
 
 const questionSheetSchema = new mongoose.Schema({
+  sheetName: {
+    type: String,
+    required: true
+  },
   questions: {
     type: [questionSchema],
     required: true,

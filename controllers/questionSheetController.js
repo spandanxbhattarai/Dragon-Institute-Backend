@@ -2,7 +2,8 @@ import * as questionSheetService from '../services/questionSheetService.js';
 
 export async function getAllQuestionSheets(req, res) {
   try {
-    const questionSheets = await questionSheetService.getAllQuestionSheets();
+    const { fields} = req.query;
+    const questionSheets = await questionSheetService.getAllQuestionSheets(fields);
     return res.status(200).json({
       success: true,
       data: questionSheets
