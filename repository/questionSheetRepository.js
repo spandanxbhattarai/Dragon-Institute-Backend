@@ -1,9 +1,36 @@
 import { QuestionSheet } from '../models/questionSheet.js';
 
-export async function findAllQuestionSheets(fields) {
+export async function findAllQuestionSheets(fields, page = 1, pageSize = 10) {
   try {
-    const selectFields = fields && fields.length > 0  ? fields.split(',').join(' ') : '';
-    return await QuestionSheet.find().select(selectFields);
+
+    if (page < 1) page = 1;
+    if (pageSize < 1) pageSize = 10;
+
+    const skip = (page - 1) * pageSize;
+
+    const selectFields = fields && fields.length > 0 ? fields.split(',').join(' ') : '';
+
+    const questionSheets = await QuestionSheet.find()
+      .select(selectFields)
+      .skip(skip)
+      .limit(pageSize)
+      .sort({ createdAt: -1 }); 
+
+    const totalCount = await QuestionSheet.countDocuments();
+
+    const totalPages = Math.ceil(totalCount / pageSize);
+
+    return {
+      data: questionSheets,
+      pagination: {
+        total: totalCount,
+        page,
+        pageSize,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1
+      }
+    };
   } catch (error) {
     throw new Error(`Error fetching question sheets: ${error.message}`);
   }

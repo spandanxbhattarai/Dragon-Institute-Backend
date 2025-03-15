@@ -1,9 +1,9 @@
 import * as questionSheetRepository from '../repository/questionSheetRepository.js';
 import { addExamResults } from '../repository/userRepository.js';
 
-export async function getAllQuestionSheets(fields) {
+export async function getAllQuestionSheets(fields, page, pageSize) {
   try {
-    return await questionSheetRepository.findAllQuestionSheets(fields);
+    return await questionSheetRepository.findAllQuestionSheets(fields, page, pageSize);
   } catch (error) {
     throw error;
   }
