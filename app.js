@@ -6,6 +6,8 @@ import { seedAdminUser } from './utils/adminSeed.js';
 import questionSheetRoutes from './routes/questionSheetRoutes.js';
 import courseRoutes from './routes/courseRoutes.js';
 import examRoutes from './routes/examRoutes.js'
+import announcementRoutes from './routes/announcementRoutes.js';
+import advertisementRoutes from './routes/advertisementRoutes.js'
 
 dotenv.config();
 
@@ -37,6 +39,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/questionsheets', questionSheetRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/exams', examRoutes);
+app.use('/api/announcements', announcementRoutes);
+app.use("/api/advertisements", advertisementRoutes);
 
 
 // Error handling middleware

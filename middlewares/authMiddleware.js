@@ -74,9 +74,9 @@ export const authenticate = async (req, res, next) => {
         message: 'Authentication token is missing'
       });
     }
-
+    console.log(token)
     const decoded = await userService.verifyToken(token);
-
+   
     req.user = {
       id: decoded.id,
       plan: decoded.plan,
