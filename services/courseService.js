@@ -1,42 +1,88 @@
 import * as courseRepository from '../repository/courseRepository.js';
 
-export async function getAllCourses(fields = [], pages = 1, pageLimits = 10) {
+export async function getCoursesSummary(page = 1, limit = 10) {
+  const result = await courseRepository.findCoursesSummary(page, limit);
   
-  return await courseRepository.findAllCourses(fields, pages, pageLimits);
+  if (!result.courses || result.courses.length === 0) {
+    throw new Error('No courses found', 404);
+  }
+
+  return {
+    courses: result.courses,
+    pagination: result.pagination
+  };
 }
 
-export async function getCourseById(id) {
-  const course = await courseRepository.findCourseById(id);
-  if (!course) {
-    throw new Error('Course not found');
+export async function getCoursesFullDetails(page = 1, limit = 10) {
+  const result = await courseRepository.findCoursesFullDetails(page, limit);
+  
+  if (!result.courses || result.courses.length === 0) {
+    throw new Error('No courses found', 404);
   }
-  return course;
+
+  return {
+    courses: result.courses,
+    pagination: result.pagination
+  };
 }
 
 export async function createCourse(courseData) {
-  return await courseRepository.createCourse(courseData);
+  // Ensure non-modifiable fields are not set
+  const sanitizedData = { ...courseData };
+  delete sanitizedData.overallRating;
+  delete sanitizedData.reviews;
+  delete sanitizedData.studentsEnrolled;
+
+  // Additional service-level validation
+  if (sanitizedData.overallHours < 1) {
+    throw new Error('Course must be at least 1 hour long', 400);
+  }
+
+  if (!Array.isArray(sanitizedData.curriculum) || sanitizedData.curriculum.length === 0) {
+    throw new Error('At least one curriculum item is required', 400);
+  }
+
+  return await courseRepository.createCourse(sanitizedData);
 }
 
-export async function updateCourse(id, courseData) {
-  const course = await courseRepository.updateCourse(id, courseData);
-  if (!course) {
-    throw new Error('Course not found');
+export async function updateCourse(id, updateData) {
+  // Additional service-level validation
+  if (updateData.price !== undefined && updateData.price < 0) {
+    throw new Error('Price cannot be negative', 400);
   }
-  return course;
+
+  const updatedCourse = await courseRepository.updateCourse(id, updateData);
+  
+  if (!updatedCourse) {
+    throw new Error('Course not found', 404);
+  }
+
+  return updatedCourse;
 }
 
 export async function deleteCourse(id) {
-  const course = await courseRepository.deleteCourse(id);
-  if (!course) {
-    throw new Error('Course not found');
+  const deletedCourse = await courseRepository.deleteCourse(id);
+  
+  if (!deletedCourse) {
+    throw new Error('Course not found', 404);
   }
-  return course;
+
+  return deletedCourse;
 }
 
-export async function addReview(id, reviewData) {
-  const course = await courseRepository.addReviewToCourse(id, reviewData);
-  if (!course) {
-    throw new Error('Course not found');
+export async function addReview(id, userId, reviewData) {
+  // Add student ID to review data
+  const completeReviewData = {
+    ...reviewData,
+    studentId: userId,
+    date: new Date()
+  };
+
+  const updatedCourse = await courseRepository.addReview(id, completeReviewData);
+  
+  if (!updatedCourse) {
+    throw new Error('Course not found', 404);
   }
-  return course;
+
+  return updatedCourse;
 }

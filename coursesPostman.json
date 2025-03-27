@@ -1,0 +1,157 @@
+{
+    "info": {
+      "_postman_id": "a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8",
+      "name": "Course Management API",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Get Courses Summary",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "{{base_url}}/courses?page=1&limit=10",
+            "host": ["{{base_url}}"],
+            "path": ["courses"],
+            "query": [
+              {"key": "page", "value": "1"},
+              {"key": "limit", "value": "10"}
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get Courses Full Details",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "{{base_url}}/courses/full-details?page=1&limit=10",
+            "host": ["{{base_url}}"],
+            "path": ["courses", "full-details"],
+            "query": [
+              {"key": "page", "value": "1"},
+              {"key": "limit", "value": "10"}
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Create Course (Admin)",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Authorization",
+              "value": "Bearer {{admin_token}}"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"title\": \"Advanced JavaScript\",\n  \"description\": [\"Learn advanced JavaScript concepts\", \"Master modern frameworks\"],\n  \"teachersCount\": 3,\n  \"courseHighlights\": [\"Hands-on projects\", \"Expert instructors\"],\n  \"overallHours\": 40,\n  \"moduleLeader\": \"John Doe\",\n  \"category\": \"Programming\",\n  \"learningFormat\": [{\"name\": \"Video\", \"description\": \"Pre-recorded video lectures\"}],\n  \"price\": 99.99,\n  \"curriculum\": [{\"title\": \"Introduction\", \"duration\": 2, \"description\": \"Course overview\"}]\n}"
+          },
+          "url": {
+            "raw": "{{base_url}}/courses",
+            "host": ["{{base_url}}"],
+            "path": ["courses"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Update Course (Admin)",
+        "request": {
+          "method": "PATCH",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Authorization",
+              "value": "Bearer {{admin_token}}"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"price\": 89.99,\n  \"teachersCount\": 4,\n  \"description\": [\"Updated description\"]\n}"
+          },
+          "url": {
+            "raw": "{{base_url}}/courses/{{course_id}}",
+            "host": ["{{base_url}}"],
+            "path": ["courses", "{{course_id}}"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Delete Course (Admin)",
+        "request": {
+          "method": "DELETE",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer {{admin_token}}"
+            }
+          ],
+          "url": {
+            "raw": "{{base_url}}/courses/{{course_id}}",
+            "host": ["{{base_url}}"],
+            "path": ["courses", "{{course_id}}"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Add Review (User)",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Authorization",
+              "value": "Bearer {{user_token}}"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"studentName\": \"Alice\",\n  \"studentReview\": \"Great course!\",\n  \"rating\": 5,\n  \"comment\": \"Highly recommended\"\n}"
+          },
+          "url": {
+            "raw": "{{base_url}}/courses/{{course_id}}/reviews",
+            "host": ["{{base_url}}"],
+            "path": ["courses", "{{course_id}}", "reviews"]
+          }
+        },
+        "response": []
+      }
+    ],
+    "variable": [
+      {
+        "key": "base_url",
+        "value": "http://localhost:3000/api/v1"
+      },
+      {
+        "key": "admin_token",
+        "value": "your_admin_jwt_token_here"
+      },
+      {
+        "key": "user_token",
+        "value": "your_user_jwt_token_here"
+      },
+      {
+        "key": "course_id",
+        "value": "existing_course_id_here"
+      }
+    ]
+  }

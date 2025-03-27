@@ -5,11 +5,13 @@ import { authenticateToken, isAdmin, isUser } from '../middlewares/authMiddlewar
 const router = express.Router();
 
 router.route('/')
-  .get(courseController.getAllCourses)
+  .get(courseController.getAllCoursesFullDetails)
   .post(authenticateToken, isAdmin, courseController.createCourse);
 
+router.route('/summary')
+   .get(courseController.getAllCoursesSummary)
+
 router.route('/:id')
-  .get(courseController.getCourseById)
   .patch(authenticateToken, isAdmin, courseController.updateCourse)
   .delete(authenticateToken, isAdmin, courseController.deleteCourse);
 

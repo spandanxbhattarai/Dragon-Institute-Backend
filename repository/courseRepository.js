@@ -1,69 +1,89 @@
 import Course from '../models/course.js';
-export async function findAllCourses(fields = [], pages, pageLimits) {
-  const skip = (pages - 1) * pageLimits;
 
-  const projection = {};
-  if (Array.isArray(fields) && fields.length > 0) {
-    fields.forEach(field => {
-      projection[field] = 1;
-    });
-  }
-
-  const selectFields = fields.length > 0  ? fields.split(',').join(' ') : '';
-
-  console.log(selectFields)
-  const courses = await Course.find({}, projection)
-  .select(selectFields)
-    .skip(skip)
-    .limit(pageLimits)
-    .lean();
+export async function findCoursesSummary(page = 1, limit = 10) {
+  const skip = (page - 1) * limit;
   
+  const courses = await Course.find({})
+    .select('title category studentsEnrolled overallRating moduleLeader overallHours price curriculum teachersCount')
+    .skip(skip)
+    .limit(limit)
+    .lean();
 
   const totalCount = await Course.countDocuments({});
-
-  const totalPages = Math.ceil(totalCount / pageLimits);
-  const hasNextPage = pages < totalPages;
-  const hasPrevPage = pages > 1;
   
   return {
-    courses,
+    courses: courses.map(course => ({
+      ...course,
+      curriculumCount: course.curriculum.length
+    })),
     pagination: {
-      currentPage: pages,
-      pageLimit: pageLimits,
-      totalCount : totalCount,
-      totalPages: totalPages,
-      hasNextPage : hasNextPage,
-      hasPrevPage : hasPrevPage
+      currentPage: page,
+      itemsPerPage: limit,
+      totalItems: totalCount,
+      totalPages: Math.ceil(totalCount / limit),
+      hasNextPage: page * limit < totalCount,
+      hasPreviousPage: page > 1
     }
   };
 }
 
-export async function findCourseById(id) {
-  return await Course.findById(id);
+export async function findCoursesFullDetails(page = 1, limit = 10) {
+  const skip = (page - 1) * limit;
+  
+  const courses = await Course.find({})
+    .skip(skip)
+    .limit(limit)
+    .lean();
+
+  const totalCount = await Course.countDocuments({});
+  
+  return {
+    courses,
+    pagination: {
+      currentPage: page,
+      itemsPerPage: limit,
+      totalItems: totalCount,
+      totalPages: Math.ceil(totalCount / limit),
+      hasNextPage: page * limit < totalCount,
+      hasPreviousPage: page > 1
+    }
+  };
 }
 
 export async function createCourse(courseData) {
   return await Course.create(courseData);
 }
 
-export async function updateCourse(id, courseData) {
-  return await Course.findByIdAndUpdate(id, courseData, {
-    new: true,
-    runValidators: true
-  });
+export async function updateCourse(id, updateData) {
+  return await Course.findByIdAndUpdate(
+    id, 
+    updateData, 
+    { new: true, runValidators: true }
+  );
 }
 
 export async function deleteCourse(id) {
   return await Course.findByIdAndDelete(id);
 }
 
-export async function addReviewToCourse(id, reviewData) {
+export async function addReview(id, reviewData) {
   const course = await Course.findById(id);
-  if (!course) return null;
   
+  if (!course) {
+    return null;
+  }
+  
+  // Add new review
   course.reviews.push(reviewData);
-  course.calculateAverageRating();
-  await course.save();
   
+  // Recalculate overall rating
+  if (course.reviews.length === 0) {
+    course.overallRating = 0;
+  } else {
+    const sum = course.reviews.reduce((acc, review) => acc + review.rating, 0);
+    course.overallRating = parseFloat((sum / course.reviews.length).toFixed(1));
+  }
+  
+  await course.save();
   return course;
 }

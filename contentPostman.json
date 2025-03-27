@@ -1,0 +1,181 @@
+{
+	"info": {
+	  "_postman_id": "a1b2c3d4-e5f6-7890",
+	  "name": "Content Management API",
+	  "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+	  {
+		"name": "Create Content",
+		"request": {
+		  "method": "POST",
+		  "header": [
+			{
+			  "key": "Authorization",
+			  "value": "Bearer {{auth_token}}"
+			},
+			{
+			  "key": "Content-Type",
+			  "value": "application/json"
+			}
+		  ],
+		  "body": {
+			"mode": "raw",
+			"raw": "{\n  \"title\": \"Annual Tech Conference 2023\",\n  \"category\": \"event\",\n  \"subCategory\": \"technology\",\n  \"executionDate\": \"2023-11-15T09:00:00Z\",\n  \"expirationDate\": \"2023-11-16T18:00:00Z\",\n  \"content\": [\n    \"Join us for the biggest tech event of the year\",\n    \"Featuring keynote speakers from top tech companies\"\n  ],\n  \"author\": \"Tech Team\",\n  \"platform\": \"hybrid\",\n  \"resourceMaterials\": [\n    {\n      \"materialName\": \"Event Brochure\",\n      \"fileType\": \"PDF\",\n      \"fileSize\": 2500,\n      \"url\": \"https://example.com/brochure.pdf\"\n    }\n  ],\n  \"subInformation\": [\n    {\n      \"title\": \"Schedule\",\n      \"bulletPoints\": [\n        \"9:00 AM - Registration\",\n        \"10:00 AM - Keynote\"\n      ],\n      \"description\": \"Full day event with multiple sessions\"\n    }\n  ],\n  \"cta\": {\n    \"title\": \"Register Now\",\n    \"imageUrl\": \"https://example.com/register.jpg\",\n    \"description\": \"Limited seats available\",\n    \"buttons\": [\n      {\n        \"buttonName\": \"Sign Up\",\n        \"href\": \"https://example.com/register\"\n      }\n    ]\n  },\n  \"isImportant\": true,\n  \"isVisible\": true\n}"
+		  },
+		  "url": {
+			"raw": "{{base_url}}/contents",
+			"host": ["{{base_url}}"],
+			"path": ["contents"]
+		  }
+		}
+	  },
+	  {
+		"name": "Get All Contents",
+		"request": {
+		  "method": "GET",
+		  "header": [],
+		  "url": {
+			"raw": "{{base_url}}/contents?page=1&limit=10",
+			"host": ["{{base_url}}"],
+			"path": ["contents"],
+			"query": [
+			  {
+				"key": "page",
+				"value": "1"
+			  },
+			  {
+				"key": "limit",
+				"value": "10"
+			  }
+			]
+		  }
+		}
+	  },
+	  {
+		"name": "Get Contents by Category",
+		"request": {
+		  "method": "GET",
+		  "header": [],
+		  "url": {
+			"raw": "{{base_url}}/contents/category/event?page=1&limit=5",
+			"host": ["{{base_url}}"],
+			"path": ["contents", "category", "event"],
+			"query": [
+			  {
+				"key": "page",
+				"value": "1"
+			  },
+			  {
+				"key": "limit",
+				"value": "5"
+			  }
+			]
+		  }
+		}
+	  },
+	  {
+		"name": "Get Latest Contents",
+		"request": {
+		  "method": "GET",
+		  "header": [],
+		  "url": {
+			"raw": "{{base_url}}/contents/latest?limit=3",
+			"host": ["{{base_url}}"],
+			"path": ["contents", "latest"],
+			"query": [
+			  {
+				"key": "limit",
+				"value": "3"
+			  }
+			]
+		  }
+		}
+	  },
+	  {
+		"name": "Get Content by ID",
+		"request": {
+		  "method": "GET",
+		  "header": [],
+		  "url": {
+			"raw": "{{base_url}}/contents/{{content_id}}",
+			"host": ["{{base_url}}"],
+			"path": ["contents", "{{content_id}}"]
+		  }
+		}
+	  },
+	  {
+		"name": "Update Content",
+		"request": {
+		  "method": "PUT",
+		  "header": [
+			{
+			  "key": "Authorization",
+			  "value": "Bearer {{auth_token}}"
+			},
+			{
+			  "key": "Content-Type",
+			  "value": "application/json"
+			}
+		  ],
+		  "body": {
+			"mode": "raw",
+			"raw": "{\n  \"title\": \"Annual Tech Conference 2023 (Updated)\",\n  \"isImportant\": false\n}"
+		  },
+		  "url": {
+			"raw": "{{base_url}}/contents/{{content_id}}",
+			"host": ["{{base_url}}"],
+			"path": ["contents", "{{content_id}}"]
+		  }
+		}
+	  },
+	  {
+		"name": "Delete Content",
+		"request": {
+		  "method": "DELETE",
+		  "header": [
+			{
+			  "key": "Authorization",
+			  "value": "Bearer {{auth_token}}"
+			}
+		  ],
+		  "url": {
+			"raw": "{{base_url}}/contents/{{content_id}}",
+			"host": ["{{base_url}}"],
+			"path": ["contents", "{{content_id}}"]
+		  }
+		}
+	  }
+	],
+	"variable": [
+	  {
+		"key": "base_url",
+		"value": "http://localhost:3000/api"
+	  },
+	  {
+		"key": "auth_token",
+		"value": "your_jwt_token_here"
+	  },
+	  {
+		"key": "content_id",
+		"value": "650d8a3b1f2e4c3d4b5e6f7a",
+		"description": "Will be set automatically after creating content"
+	  }
+	],
+	"event": [
+	  {
+		"listen": "test",
+		"script": {
+		  "exec": [
+			"// Set content_id variable after creation",
+			"if (pm.response.code === 201) {",
+			"    const jsonData = pm.response.json();",
+			"    pm.collectionVariables.set('content_id', jsonData.data._id);",
+			"    console.log('Set content_id:', jsonData.data._id);",
+			"}"
+		  ],
+		  "type": "text/javascript"
+		}
+	  }
+	]
+  }
