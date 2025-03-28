@@ -1,0 +1,123 @@
+import mongoose from 'mongoose';
+
+const OrganizerSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+    lowercase: true,
+    match: [/.+\@.+\..+/, 'Please fill a valid email address']
+  },
+  phone: {
+    type: String,
+    trim: true
+  }
+}, { _id: false });
+
+const VenueSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  address: {
+    type: String,
+    required: true,
+    trim: true
+  }
+}, { _id: false });
+
+const ResourceMaterialSchema = new mongoose.Schema({
+  materialName: {
+    type: String,
+    trim: true
+  },
+  fileType: {
+    type: String,
+    trim: true
+  },
+  fileSize: Number,
+  url: {
+    type: String,
+    trim: true,
+    validate: {
+      validator: function(v) {
+        return /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/.test(v);
+      },
+      message: props => `${props.value} is not a valid URL!`
+    }
+  }
+}, { _id: false });
+
+const ExtraInformationSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    trim: true,
+    required: true
+  },
+  description: {
+    type: String,
+    trim: true
+  }
+}, { _id: false });
+
+const EventSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  description: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  event_type: {
+    type: String,
+    required: true,
+    enum: ['Seminar', 'Workshop', 'Conference', 'Webinar', 'Meetup', 'Other'],
+    default: 'Other'
+  },
+  organizer: {
+    type: OrganizerSchema,
+    required: true
+  },
+  date: {
+    type: Date,
+    required: true
+  },
+  start_time: {
+    type: String,
+    required: true
+  },
+  end_time: {
+    type: String,
+    required: true
+  },
+  venue: {
+    type: VenueSchema,
+    required: true
+  },
+  resourceMaterials: [ResourceMaterialSchema],
+  extraInformation: [ExtraInformationSchema],
+  isActive: {
+    type: Boolean,
+    default: true
+  }
+}, { 
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
+
+EventSchema.index({ date: -1 });
+
+
+const EventModel = mongoose.model('Event', EventSchema);
+
+export default EventModel;

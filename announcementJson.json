@@ -1,0 +1,174 @@
+{
+	"info": {
+	  "_postman_id": "a1b2c3d4-e5f6-7890-f1e2-d3c4b5a6f7e8",
+	  "name": "Announcement API",
+	  "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+	  {
+		"name": "Create Announcement",
+		"request": {
+		  "method": "POST",
+		  "header": [
+			{
+			  "key": "Content-Type",
+			  "value": "application/json"
+			}
+		  ],
+		  "body": {
+			"mode": "raw",
+			"raw": "{\n  \"title\": \"Important System Update\",\n  \"content\": [\"We will be performing system maintenance on Saturday at 2 AM UTC. The system will be unavailable for approximately 2 hours.\"],\n  \"resourceMaterials\": [\n    {\n      \"materialName\": \"Maintenance Schedule\",\n      \"fileType\": \"pdf\",\n      \"fileSize\": 512,\n      \"url\": \"https://example.com/maintenance.pdf\"\n    }\n  ],\n  \"subInformation\": [\n    {\n      \"title\": \"Affected Services\",\n      \"bulletPoints\": [\"User Dashboard\", \"Reporting Module\", \"API Endpoints\"],\n      \"description\": \"These services will be temporarily unavailable during the maintenance window.\"\n    }\n  ],\n  \"cta\": {\n    \"title\": \"Need Help?\",\n    \"imageUrl\": \"https://example.com/support.jpg\",\n    \"description\": \"Contact our support team if you have urgent needs during this period\",\n    \"buttons\": [\n      {\n        \"buttonName\": \"Support Portal\",\n        \"href\": \"https://support.example.com\"\n      }\n    ]\n  }\n}",
+			"options": {
+			  "raw": {
+				"language": "json"
+			  }
+			}
+		  },
+		  "url": {
+			"raw": "{{base_url}}/api/announcements",
+			"host": [
+			  "{{base_url}}"
+			],
+			"path": [
+			  "api",
+			  "announcements"
+			]
+		  }
+		},
+		"response": []
+	  },
+	  {
+		"name": "Get All Announcements (Paginated)",
+		"request": {
+		  "method": "GET",
+		  "header": [],
+		  "url": {
+			"raw": "{{base_url}}/api/announcements?page=1&limit=2",
+			"host": [
+			  "{{base_url}}"
+			],
+			"path": [
+			  "api",
+			  "announcements"
+			],
+			"query": [
+			  {
+				"key": "page",
+				"value": "1"
+			  },
+			  {
+				"key": "limit",
+				"value": "2"
+			  }
+			]
+		  }
+		},
+		"response": []
+	  },
+	  {
+		"name": "Get Single Announcement",
+		"request": {
+		  "method": "GET",
+		  "header": [],
+		  "url": {
+			"raw": "{{base_url}}/api/announcements/:id",
+			"host": [
+			  "{{base_url}}"
+			],
+			"path": [
+			  "api",
+			  "announcements",
+			  ":id"
+			],
+			"variable": [
+			  {
+				"key": "id",
+				"value": "64d5f7a9b4c1d3a9c8f3b2c1"
+			  }
+			]
+		  }
+		},
+		"response": []
+	  },
+	  {
+		"name": "Update Announcement",
+		"request": {
+		  "method": "PUT",
+		  "header": [
+			{
+			  "key": "Content-Type",
+			  "value": "application/json"
+			}
+		  ],
+		  "body": {
+			"mode": "raw",
+			"raw": "{\n  \"title\": \"Updated: Important System Maintenance\",\n  \"isActive\": false,\n  \"content\": [\"We will be performing system maintenance on Saturday at 2 AM UTC. The system will be unavailable for approximately 2 hours.\", \"New: The maintenance window has been extended by 30 minutes\"]\n}",
+			"options": {
+			  "raw": {
+				"language": "json"
+			  }
+			}
+		  },
+		  "url": {
+			"raw": "{{base_url}}/api/announcements/:id",
+			"host": [
+			  "{{base_url}}"
+			],
+			"path": [
+			  "api",
+			  "announcements",
+			  ":id"
+			],
+			"variable": [
+			  {
+				"key": "id",
+				"value": "64d5f7a9b4c1d3a9c8f3b2c1"
+			  }
+			]
+		  }
+		},
+		"response": []
+	  },
+	  {
+		"name": "Delete Announcement",
+		"request": {
+		  "method": "DELETE",
+		  "header": [],
+		  "url": {
+			"raw": "{{base_url}}/api/announcements/:id",
+			"host": [
+			  "{{base_url}}"
+			],
+			"path": [
+			  "api",
+			  "announcements",
+			  ":id"
+			],
+			"variable": [
+			  {
+				"key": "id",
+				"value": "64d5f7a9b4c1d3a9c8f3b2c1"
+			  }
+			]
+		  }
+		},
+		"response": []
+	  }
+	],
+	"variable": [
+	  {
+		"key": "base_url",
+		"value": "http://localhost:3000"
+	  }
+	],
+	"auth": {
+	  "type": "bearer",
+	  "bearer": [
+		{
+		  "key": "token",
+		  "value": "your_access_token_here",
+		  "type": "string"
+		}
+	  ]
+	}
+  }

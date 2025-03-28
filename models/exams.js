@@ -3,19 +3,22 @@ import mongoose from 'mongoose';
 const examSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true
+    required: [true, 'Exam title is required'],
+    trim: true,
+    maxlength: [200, 'Title cannot exceed 200 characters']
   },
   description: {
     type: String,
-    required: true
+    required: [true, 'Description is required'],
+    trim: true
   },
   startTime: {
     type: Date,
-    required: true
+    required: [true, 'Start time is required']
   },
   endTime: {
     type: Date,
-    required: true,
+    required: [true, 'End time is required'],
     validate: {
       validator: function(v) {
         return v > this.startTime;
@@ -23,7 +26,6 @@ const examSchema = new mongoose.Schema({
       message: 'End time must be after start time'
     }
   },
-  // Eligible student plans
   eligiblePlans: {
     fullPlan: {
       type: Boolean,
@@ -38,7 +40,6 @@ const examSchema = new mongoose.Schema({
       default: false
     }
   },
-  // Eligible courses
   eligibleCourses: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Course'
@@ -46,8 +47,26 @@ const examSchema = new mongoose.Schema({
   questionSheet: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'QuestionSheet',
-    required: true
+    required: [true, 'Question sheet is required']
   }
-}, { timestamps: true });
+}, { 
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true } 
+});
 
-export const Exam = mongoose.model('Exam', examSchema);
+// Optimized compound index for getExamsForStudent
+examSchema.index({
+  eligibleCourses: 1,
+  'eligiblePlans.fullPlan': 1,
+  'eligiblePlans.halfPayment': 1,
+  'eligiblePlans.freePlan': 1,
+  endTime: -1,
+  startTime: 1
+});
+
+// Secondary index for general queries
+examSchema.index({ startTime: 1 });
+
+const Exam = mongoose.model('Exam', examSchema);
+export default Exam;

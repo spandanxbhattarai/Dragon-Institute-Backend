@@ -42,17 +42,17 @@ export const getExamsForStudent = async (courseEnrolled, plan) => {
     
     // Get eligible exams for student
     let exams = await examRepository.getExamsForStudent(courseEnrolled, plan, currentTime);
+
     
     // Process exams to hide question sheet IDs if needed
     exams = exams.map(exam => {
-      const examObj = exam.toObject();
       
       // Hide question sheet if exam has not started yet
-      if (new Date(examObj.startTime) > currentTime) {
-        delete examObj.questionSheet;
+      if (new Date(exam.startTime) > currentTime) {
+        delete exam.questionSheet;
       }
       
-      return examObj;
+      return exam;
     });
     
     return exams;
