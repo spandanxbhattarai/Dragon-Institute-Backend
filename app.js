@@ -7,7 +7,9 @@ import questionSheetRoutes from './routes/questionSheetRoutes.js';
 import courseRoutes from './routes/courseRoutes.js';
 import examRoutes from './routes/examRoutes.js'
 import advertisementRoutes from './routes/advertisementRoutes.js'
-import contentRoutes from './routes/contentRoutes.js'
+import announcementRoutes from './routes/announcementRoutes.js';
+import eventRoutes from './routes/eventsRoutes.js';
+import newsRoutes from './routes/newsRoutes.js';
 
 dotenv.config();
 
@@ -38,10 +40,11 @@ app.use(express.json());
 app.use('/api/users', userRoutes);
 app.use('/api/questionsheets', questionSheetRoutes);
 app.use('/api/courses', courseRoutes);
-app.use('/api/contents', contentRoutes);
 app.use('/api/exams', examRoutes);
+app.use('/api/announcements', announcementRoutes);
 app.use("/api/advertisements", advertisementRoutes);
-
+app.use("/api/events", eventRoutes);
+app.use("/api/news", newsRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
