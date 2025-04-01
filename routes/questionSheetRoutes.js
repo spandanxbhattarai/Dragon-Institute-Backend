@@ -10,6 +10,6 @@ router.get('/:id', authenticateToken, isUser, questionSheetController.getQuestio
 router.post('/', authenticateToken, isAdmin, questionSheetController.createQuestionSheet);
 router.put('/:id',authenticateToken, isAdmin, questionSheetController.updateQuestionSheet);
 router.delete('/:id',authenticateToken, isAdmin, questionSheetController.deleteQuestionSheet);
-router.post('/:questionSheetId/submit', authenticate, questionSheetController.submitAnswers);
+router.post('/:questionSheetId/submit/:examId', authenticate, questionSheetController.submitAnswers);
 
 export default router;

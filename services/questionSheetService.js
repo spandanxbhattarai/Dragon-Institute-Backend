@@ -99,7 +99,7 @@ export async function deleteQuestionSheet(id) {
   }
 }
 
-export async function calculateScoreAndPercentage(questionSheetId, userAnswers, userId, examTitle) {
+export async function calculateScoreAndPercentage(questionSheetId, userAnswers, userId, examTitle, examId) {
   const questionSheet = await questionSheetRepository.findQuestionSheetsById(questionSheetId);
   if (!questionSheet) {
     throw new Error('Question sheet not found');
@@ -124,7 +124,7 @@ export async function calculateScoreAndPercentage(questionSheetId, userAnswers, 
   const totalQuestions = questionSheet.questions.length;
   const percentage = (correctAnswersCount / totalQuestions) * 100;
 
-  const message = await addExamResults(userId, { examName : examTitle, totalQuestions, correctAnswers: correctAnswersCount });
+  const message = await addExamResults(userId, { examName : examTitle, totalQuestions, correctAnswers: correctAnswersCount, examId: examId });
   if(message === "Sucessfull")
   {
   return {

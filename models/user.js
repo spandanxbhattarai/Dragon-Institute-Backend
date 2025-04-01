@@ -2,6 +2,10 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
 const examsAttendedSchema = new mongoose.Schema({
+  examId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
+  },
   examName: {
     type: String,
     required: true
@@ -66,8 +70,31 @@ const userSchema = new mongoose.Schema({
   }
 });
 
+userSchema.index({ fullname: 'text' });
 
+// Add search method to the model
+userSchema.statics.searchByFullname = async function(searchTerm, options = {}) {
+  const { page = 1, limit = 10 } = options;
+  const skip = (page - 1) * limit;
 
+  const results = await this.find(
+    { $text: { $search: searchTerm } },
+    { score: { $meta: 'textScore' } }
+  )
+  .sort({ score: { $meta: 'textScore' } })
+  .skip(skip)
+  .limit(limit)
+  .select('-password -__v'); // exclude sensitive fields
+
+  const total = await this.countDocuments({ $text: { $search: searchTerm } });
+
+  return {
+    users: results,
+    total,
+    page,
+    totalPages: Math.ceil(total / limit)
+  };
+};
 
 
 // Password hashing middleware

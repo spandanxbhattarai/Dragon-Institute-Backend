@@ -1,0 +1,160 @@
+{
+    "info": {
+      "_postman_id": "a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8",
+      "name": "Class Materials API",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Create Class Material",
+        "request": {
+          "method": "POST",
+          "header": [],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"material_id\": \"math101\",\n  \"title\": \"Mathematics 101\",\n  \"description\": \"Introduction to Calculus\",\n  \"file_url\": \"https://example.com/math101.pdf\",\n  \"batches\": [\"batch1\", \"batch2\"]\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          },
+          "url": {
+            "raw": "{{base_url}}/class-materials",
+            "host": [
+              "{{base_url}}"
+            ],
+            "path": [
+              "class-materials"
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get All Class Materials (Admin)",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "{{base_url}}/class-materials?page=1&limit=10",
+            "host": [
+              "{{base_url}}"
+            ],
+            "path": [
+              "class-materials"
+            ],
+            "query": [
+              {
+                "key": "page",
+                "value": "1"
+              },
+              {
+                "key": "limit",
+                "value": "10"
+              }
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get Class Material by ID",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "{{base_url}}/class-materials/:id",
+            "host": [
+              "{{base_url}}"
+            ],
+            "path": [
+              "class-materials",
+              ":id"
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Update Class Material",
+        "request": {
+          "method": "PUT",
+          "header": [],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"title\": \"Updated Mathematics 101\",\n  \"description\": \"Updated Introduction to Calculus\",\n  \"batches\": [\"batch1\", \"batch3\"]\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          },
+          "url": {
+            "raw": "{{base_url}}/class-materials/:id",
+            "host": [
+              "{{base_url}}"
+            ],
+            "path": [
+              "class-materials",
+              ":id"
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Delete Class Material",
+        "request": {
+          "method": "DELETE",
+          "header": [],
+          "url": {
+            "raw": "{{base_url}}/class-materials/:id",
+            "host": [
+              "{{base_url}}"
+            ],
+            "path": [
+              "class-materials",
+              ":id"
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get Class Materials by Batch ID",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "{{base_url}}/class-materials/batch/batch1?page=1&limit=10",
+            "host": [
+              "{{base_url}}"
+            ],
+            "path": [
+              "class-materials",
+              "batch",
+              "batch1"
+            ],
+            "query": [
+              {
+                "key": "page",
+                "value": "1"
+              },
+              {
+                "key": "limit",
+                "value": "10"
+              }
+            ]
+          }
+        },
+        "response": []
+      }
+    ],
+    "variable": [
+      {
+        "key": "base_url",
+        "value": "http://localhost:3000"
+      }
+    ]
+  }

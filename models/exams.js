@@ -1,72 +1,24 @@
 import mongoose from 'mongoose';
 
 const examSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: [true, 'Exam title is required'],
-    trim: true,
-    maxlength: [200, 'Title cannot exceed 200 characters']
-  },
-  description: {
-    type: String,
-    required: [true, 'Description is required'],
-    trim: true
-  },
-  startTime: {
-    type: Date,
-    required: [true, 'Start time is required']
-  },
-  endTime: {
-    type: Date,
-    required: [true, 'End time is required'],
-    validate: {
-      validator: function(v) {
-        return v > this.startTime;
-      },
-      message: 'End time must be after start time'
-    }
-  },
-  eligiblePlans: {
-    fullPlan: {
-      type: Boolean,
-      default: false
-    },
-    halfPayment: {
-      type: Boolean,
-      default: false
-    },
-    freePlan: {
-      type: Boolean,
-      default: false
-    }
-  },
-  eligibleCourses: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Course'
-  }],
-  questionSheet: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'QuestionSheet',
-    required: [true, 'Question sheet is required']
-  }
-}, { 
-  timestamps: true,
-  toJSON: { virtuals: true },
-  toObject: { virtuals: true } 
-});
+    exam_id: { type: String, required: true, unique: true },
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    exam_name: { type: String, required: true },
+    startDateTime: { type: Date, required: true, index: true }, 
+    endDateTime: { type: Date, required: true, index: true }, 
+    total_marks: { type: Number, required: true },
+    pass_marks: { type: Number, required: true },
+    question_sheet_id: { type: Number, required: true },
+    batches: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Batch',
+        required: true,
+        index: true
+    }]
+}, { timestamps: true });
 
-// Optimized compound index for getExamsForStudent
-examSchema.index({
-  eligibleCourses: 1,
-  'eligiblePlans.fullPlan': 1,
-  'eligiblePlans.halfPayment': 1,
-  'eligiblePlans.freePlan': 1,
-  endTime: -1,
-  startTime: 1
-});
+// Compound index for faster batch-based queries
+examSchema.index({ batches: 1, startDateTime: -1, endDateTime: -1 });
 
-// Secondary index for general queries
-examSchema.index({ startTime: 1 });
-
-const Exam = mongoose.model('Exam', examSchema);
-export default Exam;
+export default mongoose.model('Exam', examSchema);

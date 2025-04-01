@@ -9,7 +9,7 @@ router.route('/')
   .post(authenticateToken, isAdmin, courseController.createCourse);
 
 router.route('/summary')
-   .get(courseController.getAllCoursesSummary)
+   .get(courseController.getAllCoursesSummary);
 
 router.route('/:id')
   .patch(authenticateToken, isAdmin, courseController.updateCourse)

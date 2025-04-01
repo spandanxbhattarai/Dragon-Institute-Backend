@@ -1,0 +1,207 @@
+{
+	"info": {
+		"_postman_id": "9e8d1c5a-6c9b-48bb-9a9f-a2d3c18f7a5d",
+		"name": "Exam API",
+		"description": "Collection for testing exam management API endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Exam",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"exam_id\": \"EX001\",\n  \"title\": \"Midterm Examination\",\n  \"description\": \"Comprehensive midterm covering all topics from weeks 1-6\",\n  \"exam_name\": \"Midterm 2025\",\n  \"startDateTime\": \"2025-04-15T09:00:00Z\",\n  \"endDateTime\": \"2025-04-15T11:00:00Z\",\n  \"total_marks\": 100,\n  \"pass_marks\": 60,\n  \"question_sheet_id\": 12345,\n  \"batches\": [\"6064f4a2c0e6d8321456789a\", \"6064f4b2c0e6d8321456789b\"]\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/exams",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"exams"
+					]
+				},
+				"description": "Creates a new exam in the system"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Exams By IDs",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"examIds\": [\"EX001\", \"EX002\"]\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/exams/by-ids",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"exams",
+						"by-ids"
+					]
+				},
+				"description": "Retrieves multiple exams by their IDs"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Exams By Batch",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/exams/batch/6064f4a2c0e6d8321456789a?page=1&limit=10&userId=user123",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"exams",
+						"batch",
+						"6064f4a2c0e6d8321456789a"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						},
+						{
+							"key": "userId",
+							"value": "user123"
+						}
+					]
+				},
+				"description": "Retrieves exams for a specific batch with pagination"
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Exams (Paginated)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/exams?page=1&limit=10",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"exams"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				},
+				"description": "Retrieves all exams with pagination"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Exam",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Updated Midterm Examination\",\n  \"description\": \"Revised comprehensive midterm covering all topics from weeks 1-8\",\n  \"total_marks\": 120,\n  \"pass_marks\": 72\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/exams/EX001",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"exams",
+						"EX001"
+					]
+				},
+				"description": "Updates an existing exam by ID"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Exam",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/exams/EX001",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"exams",
+						"EX001"
+					]
+				},
+				"description": "Deletes an exam by ID"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	]
+}

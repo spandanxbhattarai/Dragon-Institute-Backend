@@ -1,0 +1,175 @@
+{
+    "info": {
+      "_postman_id": "a1b2c3d4-e5f6-7890",
+      "name": "Batch Management API",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Batch CRUD",
+        "item": [
+          {
+            "name": "Create Batch",
+            "request": {
+              "method": "POST",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"batch_name\": \"Morning Batch\",\n  \"course\": \"60d5ecb58e1f8b3a3c7e8f1d\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{base_url}}/batches",
+                "host": ["{{base_url}}"],
+                "path": ["batches"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Get All Batches",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{base_url}}/batches?page=1&limit=10",
+                "host": ["{{base_url}}"],
+                "path": ["batches"],
+                "query": [
+                  {
+                    "key": "page",
+                    "value": "1"
+                  },
+                  {
+                    "key": "limit",
+                    "value": "10"
+                  }
+                ]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Get Single Batch",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{base_url}}/batches/:id",
+                "host": ["{{base_url}}"],
+                "path": ["batches", ":id"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Update Batch",
+            "request": {
+              "method": "PUT",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"batch_name\": \"Evening Batch Updated\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{base_url}}/batches/:id",
+                "host": ["{{base_url}}"],
+                "path": ["batches", ":id"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Delete Batch",
+            "request": {
+              "method": "DELETE",
+              "header": [],
+              "url": {
+                "raw": "{{base_url}}/batches/:id",
+                "host": ["{{base_url}}"],
+                "path": ["batches", ":id"]
+              }
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "Meeting Management",
+        "item": [
+          {
+            "name": "Add Meeting to Batch",
+            "request": {
+              "method": "POST",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"title\": \"Introduction Class\",\n  \"meeting_link\": \"https://zoom.us/j/123456789\",\n  \"date\": \"2023-06-15\",\n  \"time\": \"10:00 AM\",\n  \"expiryTime\": \"2023-06-16T10:00:00Z\",\n  \"duration_minutes\": 60\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{base_url}}/batches/:batchId/meetings",
+                "host": ["{{base_url}}"],
+                "path": ["batches", ":batchId", "meetings"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Update Meeting",
+            "request": {
+              "method": "PUT",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"title\": \"Updated Introduction Class\",\n  \"meeting_link\": \"https://zoom.us/j/987654321\",\n  \"date\": \"2023-06-16\",\n  \"time\": \"11:00 AM\",\n  \"expiryTime\": \"2023-06-17T11:00:00Z\",\n  \"duration_minutes\": 90\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{base_url}}/batches/:batchId/meetings/:meetingId",
+                "host": ["{{base_url}}"],
+                "path": ["batches", ":batchId", "meetings", ":meetingId"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Remove Meeting",
+            "request": {
+              "method": "DELETE",
+              "header": [],
+              "url": {
+                "raw": "{{base_url}}/batches/:batchId/meetings/:meetingId",
+                "host": ["{{base_url}}"],
+                "path": ["batches", ":batchId", "meetings", ":meetingId"]
+              }
+            },
+            "response": []
+          }
+        ]
+      }
+    ],
+    "variable": [
+      {
+        "key": "base_url",
+        "value": "http://localhost:3000/api"
+      }
+    ]
+  }

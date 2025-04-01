@@ -1,43 +1,90 @@
 import User from '../models/user.js';
 
+// Create a new user
 export const createUser = async (userData) => {
   const user = new User(userData);
   return await user.save();
 };
 
+// Find user by ID
 export const findUserById = async (id) => {
   return await User.findById(id);
 };
 
+// Find user by email
 export const findUserByEmail = async (email) => {
   return await User.findOne({ email });
 };
 
+// Update user status
 export const updateUserStatus = async (userId, status) => {
   return await User.findByIdAndUpdate(
     userId,
     { status },
     { new: true }
-  );
+  ).select('-password');
 };
 
-export async function addExamResults(userId, examData) {
-  try {
-    console.log(userId, examData)
-    const user = await User.findById(userId);
-    if (!user) {
-      throw new Error('User not found');
-    }
-
-    user.examsAttended.push({
-      examName: examData.examName,
-      totalQuestions: examData.totalQuestions,
-      correctAnswers: examData.correctAnswers
-    });
-
-    await user.save();
-    return "Sucessfull";
-  } catch (error) {
-    throw new Error(`Error adding exam results: ${error.message}`);
+// Add exam results
+export const addExamResults = async (userId, examData) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new Error('User not found');
   }
-}
+
+  user.examsAttended.push({
+    examId: examData.examData,
+    examName: examData.examName,
+    totalQuestions: examData.totalQuestions,
+    correctAnswers: examData.correctAnswers
+  });
+
+  await user.save();
+  return "Successful";
+};
+
+// Get unverified users
+export const findUnverifiedUsers = async () => {
+  return await User.find({ 
+    status: 'unverified',
+    role: 'user'
+  }).select('-password');
+};
+
+// Get verified users
+export const findVerifiedUsers = async () => {
+  return await User.find({ 
+    status: 'verified',
+    role: 'user'
+  }).select('-password');
+};
+
+// Update user by ID
+export const updateUserById = async (userId, updateData) => {
+  return await User.findByIdAndUpdate(
+    userId,
+    updateData,
+    { new: true }
+  ).select('-password');
+};
+
+// Delete user by ID
+export const deleteUserById = async (userId) => {
+  return await User.findByIdAndDelete(userId);
+};
+
+// Update user password
+export const updateUserPassword = async (userId, newPassword) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new Error('User not found');
+  }
+  
+  user.password = newPassword;
+  await user.save();
+  return user;
+};
+
+export const searchUsersByFullname = async (searchTerm, { page = 1, limit = 10 } = {}) => {
+  return await User.searchByFullname(searchTerm, { page, limit });
+};

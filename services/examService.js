@@ -1,99 +1,55 @@
 import * as examRepository from '../repository/examRepository.js';
-import moment from 'moment-timezone';
+import { NotFoundError, ValidationError } from '../utils/errorHandler.js';
 
-// Create a new exam
 export const createExam = async (examData) => {
-  try {
-    // Validate times
-    if (new Date(examData.endTime) <= new Date(examData.startTime)) {
-      throw new Error('End time must be after start time');
+    if (!examData.batches || examData.batches.length === 0) {
+        throw new ValidationError('At least one batch must be specified');
+    }
+    return await examRepository.createExam(examData);
+};
+
+export const getExamsByIds = async (examIds) => {
+    if (!examIds || !Array.isArray(examIds) || examIds.length === 0) {
+        throw new ValidationError('Please provide valid exam IDs');
     }
     
-    // Create the exam
-    const exam = await examRepository.createExam(examData);
-    return exam;
-  } catch (error) {
-    throw error;
-  }
-};
-
-// Get all exams
-export const getAllExams = async () => {
-  try {
-    return await examRepository.getAllExams();
-  } catch (error) {
-    throw error;
-  }
-};
-
-// Get exam by ID
-export const getExamById = async (examId) => {
-  try {
-    return await examRepository.getExamById(examId);
-  } catch (error) {
-    throw error;
-  }
-};
-
-// Get exams for student based on JWT token
-export const getExamsForStudent = async (courseEnrolled, plan) => {
-  try {
-    const currentTime = moment().tz('Asia/Kathmandu').toDate();
+    const exams = await examRepository.findExamsByIds(examIds);
     
-    // Get eligible exams for student
-    let exams = await examRepository.getExamsForStudent(courseEnrolled, plan, currentTime);
-
-    
-    // Process exams to hide question sheet IDs if needed
-    exams = exams.map(exam => {
-      
-      // Hide question sheet if exam has not started yet
-      if (new Date(exam.startTime) > currentTime) {
-        delete exam.questionSheet;
-      }
-      
-      return exam;
-    });
+    if (exams.length === 0) {
+        throw new NotFoundError('No exams found with the provided IDs');
+    }
     
     return exams;
-  } catch (error) {
-    throw error;
-  }
 };
 
-// Update exam
+export const getExamsByBatch = async (batchId, page, limit, userId) => {
+    if (page <= 0 || limit <= 0) {
+        throw new ValidationError('Page and limit must be positive numbers');
+    }
+    
+    return await examRepository.getExamsByBatch(batchId, page, limit, userId);
+};
+
+export const getPaginatedExams = async (page, limit) => {
+    if (page <= 0 || limit <= 0) {
+        throw new ValidationError('Page and limit must be positive numbers');
+    }
+    
+    return await examRepository.getAllExamsPaginated(page, limit);
+};
+
 export const updateExam = async (examId, updateData) => {
-  try {
-    // Validate that user is the creator of this exam
-    const exam = await examRepository.getExamById(examId);
-    if (!exam) {
-      throw new Error('Exam not found');
+    if (!examId) {
+        throw new ValidationError('Exam ID is required');
     }
     
-    
-    // Update the exam
-    return await examRepository.updateExam(examId, updateData);
-  } catch (error) {
-    throw error;
-  }
+    return await examRepository.updateExamById(examId, updateData);
 };
 
-// Delete exam
 export const deleteExam = async (examId) => {
-  try {
-    // Validate that user is the creator of this exam
-    const exam = await examRepository.getExamById(examId);
-    if (!exam) {
-      throw new Error('Exam not found');
+    if (!examId) {
+        throw new ValidationError('Exam ID is required');
     }
     
-    if (exam.createdBy.toString() !== userId) {
-      throw new Error('Unauthorized to delete this exam');
-    }
-    
-    // Delete the exam
-    return await examRepository.deleteExam(examId);
-  } catch (error) {
-    throw error;
-  }
+    return await examRepository.deleteExamById(examId);
 };

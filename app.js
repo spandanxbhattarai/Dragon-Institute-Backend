@@ -10,6 +10,9 @@ import advertisementRoutes from './routes/advertisementRoutes.js'
 import announcementRoutes from './routes/announcementRoutes.js';
 import eventRoutes from './routes/eventsRoutes.js';
 import newsRoutes from './routes/newsRoutes.js';
+import classMaterialRoutes from "./routes/classMaterialRoutes.js"
+import { scheduleMeetingCleanup } from './scheduler/meetingCleanUp.js';
+import batchRoutes from "./routes/batchRoutes.js"
 
 dotenv.config();
 
@@ -45,6 +48,10 @@ app.use('/api/announcements', announcementRoutes);
 app.use("/api/advertisements", advertisementRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/news", newsRoutes);
+app.use("/api/classMaterial", classMaterialRoutes)
+app.use('/api/batches', batchRoutes);
+
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -63,6 +70,7 @@ initializeServer()
   .then(() => {
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
+      scheduleMeetingCleanup();
     });
   })
   .catch(err => {

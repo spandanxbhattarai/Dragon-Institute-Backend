@@ -1,22 +1,14 @@
 import * as userService from '../services/userService.js';
 
+// Register a new user
 export const register = async (req, res) => {
   try {
     const { fullname, role, email, phone, password, citizenshipImageUrl, plan, courseEnrolled } = req.body;
     
-    // Basic validation
-    if (!fullname || !role || !email || !phone || !password || !citizenshipImageUrl || !plan || !courseEnrolled ) {
+    if (!fullname || !role || !email || !phone || !password || !citizenshipImageUrl || !plan || !courseEnrolled) {
       return res.status(400).json({ 
         success: false, 
         message: 'All fields are required' 
-      });
-    }
-
-    // Validate role
-    if (!['admin', 'teacher', 'user'].includes(role)) {
-      return res.status(400).json({ 
-        success: false, 
-        message: 'Invalid role. Must be admin, teacher, or user' 
       });
     }
 
@@ -35,7 +27,6 @@ export const register = async (req, res) => {
   } catch (error) {
     console.error('Registration error:', error);
     
-    // Handle duplicate email error
     if (error.code === 11000) {
       return res.status(400).json({ 
         success: false, 
@@ -50,6 +41,32 @@ export const register = async (req, res) => {
   }
 };
 
+export const searchUsersByFullname = async (req, res) => {
+  try {
+    const { name: searchTerm } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const result = await userService.searchUsers(searchTerm, { page, limit });
+
+    res.json({
+      success: true,
+      data: result
+    });
+
+  } catch (error) {
+    const statusCode = error.message.includes('cannot be empty') || 
+                      error.message.includes('at least 2 characters') 
+                      ? 400 : 500;
+    
+    res.status(statusCode).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+// Verify user status (admin only)
 export const verifyUserStatus = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -79,6 +96,7 @@ export const verifyUserStatus = async (req, res) => {
   }
 };
 
+// User login
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -106,6 +124,134 @@ export const login = async (req, res) => {
     return res.status(500).json({ 
       success: false, 
       message: 'Error during login' 
+    });
+  }
+};
+
+// Get unverified users (admin only)
+export const getUnverifiedUsers = async (req, res) => {
+  try {
+    const result = await userService.getUnverifiedUsers(req.user);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error fetching unverified users:', error);
+    
+    if (error.message.includes('Unauthorized')) {
+      return res.status(403).json({ 
+        success: false, 
+        message: error.message 
+      });
+    }
+
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error fetching unverified users' 
+    });
+  }
+};
+
+// Get verified users (admin only)
+export const getVerifiedUsers = async (req, res) => {
+  try {
+    const result = await userService.getVerifiedUsers(req.user);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error fetching verified users:', error);
+    
+    if (error.message.includes('Unauthorized')) {
+      return res.status(403).json({ 
+        success: false, 
+        message: error.message 
+      });
+    }
+
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error fetching verified users' 
+    });
+  }
+};
+
+// Update user (admin only)
+export const updateUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const result = await userService.updateUser(userId, req.body, req.user);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error updating user:', error);
+    
+    if (error.message.includes('Unauthorized') || 
+        error.message.includes('User not found')) {
+      const status = error.message.includes('Unauthorized') ? 403 : 404;
+      return res.status(status).json({ 
+        success: false, 
+        message: error.message 
+      });
+    }
+
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error updating user' 
+    });
+  }
+};
+
+// Delete user (admin only)
+export const deleteUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const result = await userService.deleteUser(userId, req.user);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    
+    if (error.message.includes('Unauthorized') || 
+        error.message.includes('User not found')) {
+      const status = error.message.includes('Unauthorized') ? 403 : 404;
+      return res.status(status).json({ 
+        success: false, 
+        message: error.message 
+      });
+    }
+
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error deleting user' 
+    });
+  }
+};
+
+// Reset user password (admin only)
+export const resetPassword = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { newPassword } = req.body;
+    
+    if (!newPassword || newPassword.length < 6) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Password must be at least 6 characters' 
+      });
+    }
+
+    const result = await userService.resetUserPassword(userId, newPassword, req.user);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    
+    if (error.message.includes('Unauthorized') || 
+        error.message.includes('User not found')) {
+      const status = error.message.includes('Unauthorized') ? 403 : 404;
+      return res.status(status).json({ 
+        success: false, 
+        message: error.message 
+      });
+    }
+
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error resetting password' 
     });
   }
 };

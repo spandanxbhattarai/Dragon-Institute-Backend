@@ -1,0 +1,278 @@
+{
+    "info": {
+      "_postman_id": "a1b2c3d4-e5f6-7890",
+      "name": "User Management API Collection",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Authentication",
+        "item": [
+          {
+            "name": "Register User",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"fullname\": \"John Doe\",\n  \"role\": \"user\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"1234567890\",\n  \"password\": \"securePassword123\",\n  \"citizenshipImageUrl\": \"https://example.com/citizenship.jpg\",\n  \"plan\": \"full\",\n  \"courseEnrolled\": \"60d5ecb58e1f8b3a3c7e8f1d\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{base_url}}/users/register",
+                "host": ["{{base_url}}"],
+                "path": ["users", "register"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Login User",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"securePassword123\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{base_url}}/users/login",
+                "host": ["{{base_url}}"],
+                "path": ["users", "login"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Login Admin",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"adminPassword123\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{base_url}}/users/login",
+                "host": ["{{base_url}}"],
+                "path": ["users", "login"]
+              }
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "User Verification",
+        "item": [
+          {
+            "name": "Verify User (Admin Only)",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{admin_token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/users/verify/{{user_id}}",
+                "host": ["{{base_url}}"],
+                "path": ["users", "verify", "{{user_id}}"]
+              }
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "Admin User Management",
+        "item": [
+          {
+            "name": "Get Unverified Users",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{admin_token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/users/unverified",
+                "host": ["{{base_url}}"],
+                "path": ["users", "unverified"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Get Verified Users",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{admin_token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/users/verified",
+                "host": ["{{base_url}}"],
+                "path": ["users", "verified"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Update User",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{admin_token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"fullname\": \"John Doe Updated\",\n  \"phone\": \"9876543210\",\n  \"plan\": \"half\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{base_url}}/users/{{user_id}}",
+                "host": ["{{base_url}}"],
+                "path": ["users", "{{user_id}}"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Delete User",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{admin_token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/users/{{user_id}}",
+                "host": ["{{base_url}}"],
+                "path": ["users", "{{user_id}}"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Reset User Password",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{admin_token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"newPassword\": \"newSecurePassword123\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{base_url}}/users/{{user_id}}/reset-password",
+                "host": ["{{base_url}}"],
+                "path": ["users", "{{user_id}}", "reset-password"]
+              }
+            },
+            "response": []
+          }
+        ]
+      }
+    ],
+    "variable": [
+      {
+        "key": "base_url",
+        "value": "http://localhost:3000/api"
+      },
+      {
+        "key": "admin_token",
+        "value": "your_admin_jwt_token_here",
+        "description": "Obtain this from admin login response"
+      },
+      {
+        "key": "user_id",
+        "value": "60d5ecb58e1f8b3a3c7e8f1e",
+        "description": "User ID from registration response"
+      }
+    ],
+    "event": [
+      {
+        "listen": "prerequest",
+        "script": {
+          "type": "text/javascript",
+          "exec": [
+            "// You can add pre-request scripts here if needed"
+          ]
+        }
+      },
+      {
+        "listen": "test",
+        "script": {
+          "type": "text/javascript",
+          "exec": [
+            "// You can add tests here to verify responses",
+            "pm.test(\"Status code is 200\", function () {",
+            "    pm.response.to.have.status(200);",
+            "});"
+          ]
+        }
+      }
+    ]
+  }

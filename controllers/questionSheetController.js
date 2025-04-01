@@ -117,12 +117,13 @@ export async function deleteQuestionSheet(req, res) {
 
 export async function submitAnswers(req, res) {
   const { questionSheetId } = req.params;
+  const {examId} = req.params;
   const userId = req.user.id;
   const { questions } = req.body; 
   const examTitle = req.body.examTitle;
 
   try {
-    const result = await questionSheetService.calculateScoreAndPercentage(questionSheetId, questions, userId, examTitle);
+    const result = await questionSheetService.calculateScoreAndPercentage(questionSheetId, questions, userId, examTitle, examId);
     return res.json({
       message: 'Score calculated successfully',
       result
