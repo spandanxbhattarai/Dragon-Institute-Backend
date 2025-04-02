@@ -115,10 +115,6 @@ const courseSchema = new mongoose.Schema({
   category: {
     type: String,
     required: [true, 'Category is required'],
-    enum: {
-      values: ['Programming', 'Design', 'Business', 'Marketing', 'Science', 'Other'],
-      message: 'Invalid category'
-    }
   },
   reviews: {
     type: [reviewSchema],

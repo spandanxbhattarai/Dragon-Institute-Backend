@@ -10,7 +10,7 @@ export async function getCoursesSummary(page = 1, limit = 10) {
   return {
     courses: result.courses,
     pagination: result.pagination
-  };
+  };cd 
 }
 
 export async function getCoursesFullDetails(page = 1, limit = 10) {
