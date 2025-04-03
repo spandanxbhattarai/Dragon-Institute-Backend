@@ -13,6 +13,7 @@ export const findAllNewsPaginated = async ({ page = 1, limit = 10 }) => {
   
   const [data, total] = await Promise.all([
     NewsModel.find()
+      .select("_id title publishedDate publisher ")
       .sort({ publishedDate: -1 })
       .skip(skip)
       .limit(limit),

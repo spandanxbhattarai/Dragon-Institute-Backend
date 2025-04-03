@@ -86,17 +86,27 @@ const AnnouncementSchema = new mongoose.Schema({
     required: true
   }],
 
-  // Resource Materials
-  resourceMaterials: [ResourceMaterialSchema],
-
-  // Sub-Information
-  subInformation: [SubInformationSchema],
 
   // Call to Action (Optional)
   cta: {
     type: CtaSchema,
     default: undefined
   },
+
+  // Resource Materials
+resourceMaterials: {
+  type: [ResourceMaterialSchema],
+  default: undefined
+},
+
+// Sub-Information
+subInformation: {
+  type: [SubInformationSchema],
+  default: undefined
+},
+
+
+
 
 }, { 
   timestamps: true,

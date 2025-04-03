@@ -18,6 +18,18 @@ export const getEvent = async (req, res) => {
   }
 };
 
+export const getByMonthAndYear = async(req, res)=> {
+  try{
+    const {month, year} = req.query;
+    const events = await service.getByMonthAndYear(month, year);
+    res.json({
+      data: events
+    });
+  } catch(error){
+    res.status(404).json({ message: error.message });
+  }
+}
+
 export const getAllEvents = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;

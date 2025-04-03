@@ -11,6 +11,9 @@ router.route('/')
 router.route('/summary')
    .get(courseController.getAllCoursesSummary);
 
+router.route('/getById/:id')
+   .get(courseController.getCourseById);
+
 router.route('/:id')
   .patch(authenticateToken, isAdmin, courseController.updateCourse)
   .delete(authenticateToken, isAdmin, courseController.deleteCourse);

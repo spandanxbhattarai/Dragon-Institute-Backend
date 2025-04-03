@@ -65,6 +65,10 @@ export async function deleteCourse(id) {
   return await Course.findByIdAndDelete(id);
 }
 
+export async function getCourseById(id){
+  return await Course.findById(id)
+}
+
 export async function addReview(id, reviewData) {
   const course = await Course.findById(id);
   

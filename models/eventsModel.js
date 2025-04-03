@@ -80,29 +80,33 @@ const EventSchema = new mongoose.Schema({
   event_type: {
     type: String,
     required: true,
-    enum: ['Seminar', 'Workshop', 'Conference', 'Webinar', 'Meetup', 'Other'],
     default: 'Other'
+  },
+  month: {
+    type: String,
+    required: true,
+  },
+  year: {
+    type: String,
+    required: true,
   },
   organizer: {
     type: OrganizerSchema,
     required: true
   },
-  date: {
+  start_date: {
     type: Date,
     required: true
   },
-  start_time: {
-    type: String,
-    required: true
-  },
-  end_time: {
-    type: String,
+  end_date: {
+    type: Date,
     required: true
   },
   venue: {
     type: VenueSchema,
     required: true
   },
+
   resourceMaterials: [ResourceMaterialSchema],
   extraInformation: [ExtraInformationSchema],
   isActive: {

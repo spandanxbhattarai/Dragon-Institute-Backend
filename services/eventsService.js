@@ -12,6 +12,15 @@ export const getEvent = async (id) => {
   return event;
 };
 
+export const getByMonthAndYear = async (month, year) => {
+  const events = await repository.getByMonthAndYear(month, year);
+  if(!events){
+    throw new Error('Event not found');
+  }
+  return events;
+
+}
+
 export const getAllEvents = async (page, limit) => {
   return await repository.getAllEvents(page, limit);
 };

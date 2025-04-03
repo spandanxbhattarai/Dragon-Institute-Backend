@@ -90,6 +90,24 @@ export async function createCourse(req, res) {
   }
 }
 
+export async function getCourseById(req, res){
+  try{
+    const {id} = req.params;
+    const result = await courseService.getCourseById(id)
+
+    res.status(200).json({
+      status: 'success',
+      data: result
+    });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+    
+}
+
 export async function updateCourse(req, res) {
   try {
     const { id } = req.params;
@@ -127,9 +145,9 @@ export async function deleteCourse(req, res) {
     const { id } = req.params;
     await courseService.deleteCourse(id);
     
-    res.status(204).json({
+    res.status(201).json({
       status: 'success',
-      data: null
+      message: 'Course deleted sucessfully'
     });
   } catch (error) {
     res.status(error.statusCode || 400).json({

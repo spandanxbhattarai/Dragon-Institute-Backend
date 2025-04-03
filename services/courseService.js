@@ -59,7 +59,15 @@ export async function updateCourse(id, updateData) {
 
   return updatedCourse;
 }
+export async function getCourseById(id){
+  const course = await courseRepository.getCourseById(id)
 
+  if(!course._id){
+    throw new Error('Course Not found', 404)
+  }
+  
+  return course;
+}
 export async function deleteCourse(id) {
   const deletedCourse = await courseRepository.deleteCourse(id);
   
