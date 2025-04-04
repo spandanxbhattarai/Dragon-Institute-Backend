@@ -9,7 +9,11 @@ const examSchema = new mongoose.Schema({
     endDateTime: { type: Date, required: true, index: true }, 
     total_marks: { type: Number, required: true },
     pass_marks: { type: Number, required: true },
-    question_sheet_id: { type: Number, required: true },
+    question_sheet_id: { 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'QuestionSheet',
+        required: true
+     },
     batches: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Batch',

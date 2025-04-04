@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.route('/')
   .get(courseController.getAllCoursesFullDetails)
-  .post(authenticateToken, isAdmin, courseController.createCourse);
+  .post( courseController.createCourse);
 
 router.route('/summary')
    .get(courseController.getAllCoursesSummary);

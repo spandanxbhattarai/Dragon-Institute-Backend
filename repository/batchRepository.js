@@ -12,7 +12,10 @@ export const getAllBatches = async (page = 1, limit = 10) => {
   const skip = (page - 1) * limit;
   const total = await Batch.countDocuments();
   const batches = await Batch.find()
-    .populate('course')
+    .populate({
+      path: 'course',
+      select: 'title _id', 
+    })
     .select('-scheduled_meetings')
     .skip(skip)
     .limit(limit)

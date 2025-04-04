@@ -5,6 +5,10 @@ const questionSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  marks:{
+    type: Number,
+    required: true
+  },
   answers: {
     type: [String],
     required: true,

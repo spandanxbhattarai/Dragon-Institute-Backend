@@ -34,13 +34,13 @@ export const registerUser = async (userData) => {
 };
 
 // Verify user (admin only)
-export const verifyUser = async (userId, currentUser) => {
+export const verifyUser = async (userId, batchId, currentUser) => {
   try {
     if (currentUser.role !== 'admin') {
       throw new Error('Unauthorized: Only admin can verify users');
     }
 
-    const updatedUser = await userRepository.updateUserStatus(userId, 'verified');
+    const updatedUser = await userRepository.updateUserStatus(userId, batchId, 'verified');
     if (!updatedUser) {
       throw new Error('User not found');
     }
@@ -80,10 +80,10 @@ export const loginUser = async (email, password) => {
     const token = jwt.sign(
       {
         id: user._id,
-        email: user.email,
+        // email: user.email,
         role: user.role,
-        plan: user.plan,
-        courseEnrolled: user.courseEnrolled
+        // plan: user.plan,
+        // courseEnrolled: user.courseEnrolled 
       },
       process.env.JWT_SECRET,
       { expiresIn: '1d' }
@@ -96,7 +96,8 @@ export const loginUser = async (email, password) => {
         id: user._id,
         fullname: user.fullname,
         email: user.email,
-        role: user.role
+        role: user.role,
+        batch: user.batch
       }
     };
   } catch (error) {

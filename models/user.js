@@ -48,6 +48,10 @@ const userSchema = new mongoose.Schema({
     enum: ['verified', 'unverified'],
     default: 'unverified'
   },
+  batch:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Batch'
+  },
   courseEnrolled: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Course',
@@ -81,6 +85,13 @@ userSchema.statics.searchByFullname = async function(searchTerm, options = {}) {
     { $text: { $search: searchTerm } },
     { score: { $meta: 'textScore' } }
   )
+  .populate({
+    path: "batch",
+    select: 'batch_name _id',
+  }).populate({
+    path: "courseEnrolled",
+    select: 'title _id',
+  })
   .sort({ score: { $meta: 'textScore' } })
   .skip(skip)
   .limit(limit)

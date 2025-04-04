@@ -27,6 +27,6 @@ router.delete('/:userId',  authenticateToken, isAdmin, deleteUser);
 router.post('/:userId/reset-password',  authenticateToken, isAdmin, resetPassword);
 
 // User verification
-router.put('/verify/:userId',  authenticateToken, isAdmin, verifyUserStatus);
+router.put('/verify/:userId/batch/:batchId',  authenticateToken, isAdmin, verifyUserStatus);
 
 export default router;

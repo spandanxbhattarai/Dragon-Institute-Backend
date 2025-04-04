@@ -70,7 +70,9 @@ export const searchUsersByFullname = async (req, res) => {
 export const verifyUserStatus = async (req, res) => {
   try {
     const { userId } = req.params;
-    const result = await userService.verifyUser(userId, req.user);
+    const {batchId} = req.params;
+    console.log(batchId)
+    const result = await userService.verifyUser(userId, batchId, req.user);
     return res.status(200).json(result);
   } catch (error) {
     console.error('Verification error:', error);

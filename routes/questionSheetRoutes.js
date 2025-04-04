@@ -6,7 +6,7 @@ import { authenticateToken, isAdmin, isUser } from '../middlewares/authMiddlewar
 const router = express.Router();
 
 router.get('/', authenticateToken, isAdmin,questionSheetController.getAllQuestionSheets);
-router.get('/:id', authenticateToken, isUser, questionSheetController.getQuestionSheetById);
+router.get('/:id',  questionSheetController.getQuestionSheetById);
 router.post('/', authenticateToken, isAdmin, questionSheetController.createQuestionSheet);
 router.put('/:id',authenticateToken, isAdmin, questionSheetController.updateQuestionSheet);
 router.delete('/:id',authenticateToken, isAdmin, questionSheetController.deleteQuestionSheet);

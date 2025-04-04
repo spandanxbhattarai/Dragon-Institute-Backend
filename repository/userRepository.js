@@ -17,10 +17,11 @@ export const findUserByEmail = async (email) => {
 };
 
 // Update user status
-export const updateUserStatus = async (userId, status) => {
+export const updateUserStatus = async (userId, batchId, status) => {
   return await User.findByIdAndUpdate(
     userId,
-    { status },
+    { batch: batchId,
+      status },
     { new: true }
   ).select('-password');
 };
@@ -48,7 +49,13 @@ export const findUnverifiedUsers = async () => {
   return await User.find({ 
     status: 'unverified',
     role: 'user'
-  }).select('-password');
+  }).select('-password').populate({
+    path: "batch",
+    select: 'batch_name _id',
+  }).populate({
+    path: "courseEnrolled",
+    select: 'title _id',
+  });
 };
 
 // Get verified users
@@ -56,7 +63,13 @@ export const findVerifiedUsers = async () => {
   return await User.find({ 
     status: 'verified',
     role: 'user'
-  }).select('-password');
+  }).select('-password').populate({
+    path: "batch",
+    select: 'batch_name _id',
+  }).populate({
+    path: "courseEnrolled",
+    select: 'title _id',
+  });
 };
 
 // Update user by ID

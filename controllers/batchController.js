@@ -50,7 +50,7 @@ import {
   export const deleteBatch = async (req, res) => {
     try {
       await deleteBatchService(req.params.id);
-      res.status(204).send();
+      res.status(200).json({ message: "Batches Deleted Sucessfully"});
     } catch (error) {
       res.status(404).json({ message: error.message });
     }

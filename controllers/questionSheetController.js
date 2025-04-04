@@ -3,10 +3,8 @@ import * as questionSheetService from '../services/questionSheetService.js';
 export async function getAllQuestionSheets(req, res) {
   try {
     let { fields, page, pageSize} = req.query;
-    console.log("doing",)
     page = page && parseInt(page) || 1;
     pageSize = pageSize && parseInt(pageSize) || 10;
-    console.log("done")
     const questionSheets = await questionSheetService.getAllQuestionSheets(fields, page, pageSize);
     return res.status(200).json({
       success: true,

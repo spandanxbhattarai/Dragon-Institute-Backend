@@ -11,7 +11,9 @@ export const findExamsByIds = async (examIds) => {
 
 export const getExamsByBatch = async (batchId, page = 1, limit = 10, userId = null) => {
   const skip = (page - 1) * limit;
-  const now = new Date();
+  const now = new Date().toLocaleString("en-US", { timeZone: "Asia/Kathmandu" });
+
+  console.log(now)
   
   // Base query for exams in the batch where endDateTime is greater than current time
   let query = { 
@@ -72,9 +74,22 @@ export const getAllExamsPaginated = async (page = 1, limit = 10) => {
     const skip = (page - 1) * limit;
     
     const [exams, total] = await Promise.all([
-        Exam.find().skip(skip).limit(limit),
-        Exam.countDocuments()
+        Exam.find()
+            .populate({
+                path: 'question_sheet_id',
+                select: 'sheetName _id',
+            })
+            .populate({
+                path: 'batches',
+                select: 'batch_name _id',
+            })
+            .skip(skip)
+            .limit(limit)
+            .lean() 
+            .exec(), 
+        Exam.countDocuments().exec() 
     ]);
+    
     
     return {
         exams,
@@ -103,7 +118,7 @@ export const updateExamById = async (examId, updateData) => {
 };
 
 export const deleteExamById = async (examId) => {
-    const exam = await Exam.findOneAndDelete({ exam_id: examId });
+    const exam = await Exam.findOneAndDelete({ _id: examId });
     
     if (!exam) {
         throw new NotFoundError(`Exam with ID ${examId} not found`);
