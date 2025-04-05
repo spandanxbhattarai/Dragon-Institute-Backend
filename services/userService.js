@@ -18,7 +18,19 @@ export const searchUsers = async (searchTerm, pagination) => {
   // Execute search
   return await userRepository.searchUsersByFullname(searchTerm, pagination);
 };
-// Register a new user
+
+export const getUserInformation = async (userId) => {
+  try {
+    const users = await userRepository.getUserInformation(userId);
+    return {
+      success: true,
+      users
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+// Register a new user 
 export const registerUser = async (userData) => {
   try {
     userData.status = 'unverified';

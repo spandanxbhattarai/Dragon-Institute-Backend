@@ -21,7 +21,9 @@ export async function getAllQuestionSheets(req, res) {
 export async function getQuestionSheetById(req, res) {
   try {
     const { id} = req.params;
-    const questionSheet = await questionSheetService.getQuestionSheetById(id);
+    const {user} = req.query;
+    const {exam} =  req.query;
+    const questionSheet = await questionSheetService.getQuestionSheetById(id, user, exam);
     return res.status(200).json({
       success: true,
       data: questionSheet

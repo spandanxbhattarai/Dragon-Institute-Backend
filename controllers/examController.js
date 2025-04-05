@@ -24,10 +24,11 @@ export const getExamsByBatch = async (req, res) => {
     try {
         const { batchId } = req.params;
         const { userId } = req.query;
+        const {status} = req.query;
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         
-        const result = await examService.getExamsByBatch(batchId, page, limit, userId);
+        const result = await examService.getExamsByBatch(batchId, page, limit, userId, status);
         res.json({ 
             success: true, 
             data: result.exams,

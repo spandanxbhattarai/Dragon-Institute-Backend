@@ -8,7 +8,9 @@ import {
   updateUser,
   deleteUser,
   resetPassword,
-  searchUsersByFullname
+  searchUsersByFullname,
+  getUserInformation
+
 } from '../controllers/userController.js';
 import { authenticateToken, isAdmin, isUser } from '../middlewares/authMiddleware.js';
 
@@ -18,6 +20,7 @@ const router = express.Router();
 router.post('/register', register);
 router.post('/login', login);
 router.get('/search', searchUsersByFullname);
+router.get('/userInfo/:userId', getUserInformation)
 
 // Protected admin routes
 router.get('/unverified',  authenticateToken, isAdmin, getUnverifiedUsers);

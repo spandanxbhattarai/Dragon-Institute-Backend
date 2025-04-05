@@ -24,6 +24,7 @@ export const getPaginatedClassMaterials = async (batchId, page = 1, limit = 10) 
   
   const total = await ClassMaterial.countDocuments(query);
   const materials = await ClassMaterial.find(query)
+  .select("-batches -__v")
     .skip(skip)
     .limit(limit)
     .sort({ created_at: -1 })

@@ -17,7 +17,15 @@ const examsAttendedSchema = new mongoose.Schema({
   correctAnswers: {
     type: Number,
     required: true
-  }
+  },
+  unAnsweredQuestions: {
+    type: Number,
+    required: true
+  },
+  totalMarksObtained: {
+    type: Number,
+    required: true
+  },
 }, { _id: false });
 
 const userSchema = new mongoose.Schema({

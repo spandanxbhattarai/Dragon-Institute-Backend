@@ -41,6 +41,29 @@ export const register = async (req, res) => {
   }
 };
 
+export const getUserInformation = async(req, res)=> {
+  try {
+    const {userId} = req.params;
+    const result = await userService.getUserInformation(userId);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error fetching verified users:', error);
+    
+    if (error.message.includes('Unauthorized')) {
+      return res.status(403).json({ 
+        success: false, 
+        message: error.message 
+      });
+    }
+
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error fetching verified users' 
+    });
+  }
+  
+}
+
 export const searchUsersByFullname = async (req, res) => {
   try {
     const { name: searchTerm } = req.query;

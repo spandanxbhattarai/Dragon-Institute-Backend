@@ -1,5 +1,6 @@
 import * as examRepository from '../repository/examRepository.js';
 import { NotFoundError, ValidationError } from '../utils/errorHandler.js';
+import User from '../models/user.js';
 
 export const createExam = async (examData) => {
     if (!examData.batches || examData.batches.length === 0) {
@@ -22,12 +23,22 @@ export const getExamsByIds = async (examIds) => {
     return exams;
 };
 
-export const getExamsByBatch = async (batchId, page, limit, userId) => {
+export const getExamsByBatch = async (batchId, page, limit, userId, status) => {
     if (page <= 0 || limit <= 0) {
         throw new ValidationError('Page and limit must be positive numbers');
     }
+
+    if(status === "upComming"){
+        return await examRepository.getUpcomingExamsByBatch(batchId, page, limit, userId);
+
+    } else if(status==="current") {
+        return await examRepository.getCurrentExamsByBatch(batchId, page, limit, userId);
+
+    } else {
+        throw new Error("Valid Status is required")
+    }
     
-    return await examRepository.getExamsByBatch(batchId, page, limit, userId);
+    
 };
 
 export const getPaginatedExams = async (page, limit) => {
@@ -53,3 +64,38 @@ export const deleteExam = async (examId) => {
     
     return await examRepository.deleteExamById(examId);
 };
+
+// Common utility function for user and batch validation 
+export const validateUserBatch = async (userId, batchId) => {
+    if (!userId) return null;
+  
+    const user = await User.findById(userId);
+    if (user && user.batch && user.batch.toString() !== batchId.toString()) {
+      throw new Error("User doesn't belong to the specified batch");
+    }
+    return user;
+  };
+  
+  // Common function to get attended exam IDs
+export const getAttendedExamIds = (user) => {
+    return user?.examsAttended?.map(e => e.examId.toString()) || [];
+  };
+  
+  // Common function to process exams
+export const processExams = (exams, status, user = null, attendedExamIds = []) => {
+    return exams.map(exam => {
+      const examObj = exam.toObject ? exam.toObject() : {...exam};
+      examObj.status = status;
+  
+      // Hide question_sheet_id if:
+      // 1. No user is specified, OR
+      // 2. User has already attended this exam
+      // 3. For upcoming exams (handled in the query)
+      if (status === "active" && (!user || attendedExamIds.includes(exam._id.toString()))) {
+        examObj.question_sheet_id = undefined;
+      }
+  
+      return examObj;
+    });
+  };
+  

@@ -13,6 +13,7 @@ import newsRoutes from './routes/newsRoutes.js';
 import classMaterialRoutes from "./routes/classMaterialRoutes.js"
 import { scheduleMeetingCleanup } from './scheduler/meetingCleanUp.js';
 import batchRoutes from "./routes/batchRoutes.js"
+import uploadRoutes from "./routes/fileRoutes.js"
 
 dotenv.config();
 
@@ -50,6 +51,7 @@ app.use("/api/events", eventRoutes);
 app.use("/api/news", newsRoutes);
 app.use("/api/classMaterial", classMaterialRoutes)
 app.use('/api/batches', batchRoutes);
+app.use('/api/files', uploadRoutes);
 
 
 

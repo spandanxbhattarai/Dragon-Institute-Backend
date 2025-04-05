@@ -6,6 +6,12 @@ export const createUser = async (userData) => {
   return await user.save();
 };
 
+export const getUserInformation = async (userId) => {
+  const user = await User.findById(userId)
+  .select("-__v -password -createdAt -batch")
+  return user
+}
+
 // Find user by ID
 export const findUserById = async (id) => {
   return await User.findById(id);
@@ -34,14 +40,15 @@ export const addExamResults = async (userId, examData) => {
   }
 
   user.examsAttended.push({
-    examId: examData.examData,
+    examId: examData.examId,
     examName: examData.examName,
     totalQuestions: examData.totalQuestions,
-    correctAnswers: examData.correctAnswers
+    correctAnswers: examData.correctAnswers,
+    totalMarksObtained: examData.totalMarksObtained,
+    unAnsweredQuestions: examData.unAnsweredQuestions
   });
 
   await user.save();
-  return "Successful";
 };
 
 // Get unverified users
