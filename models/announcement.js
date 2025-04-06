@@ -53,10 +53,6 @@ const CtaSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
-  imageUrl: {
-    type: String,
-    trim: true
-  },
   description: {
     type: String,
     trim: true

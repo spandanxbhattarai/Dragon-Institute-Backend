@@ -1,4 +1,4 @@
-import { uploadToCloudinary } from '../services/fileService.js';
+import { uploadToSupabase, deleteFromSupabase } from '../services/fileService.js';
 import multer from 'multer';
 
 // Configure multer for memory storage
@@ -11,19 +11,9 @@ export const uploadFile = async (req, res) => {
       return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
 
-    const result = await uploadToCloudinary(req.file);
+    const result = await uploadToSupabase(req.file);
 
-    res.status(200).json({
-      success: true,
-      message: 'File uploaded successfully',
-      data: {
-        url: result.url,
-        public_id: result.public_id,
-        format: result.format,
-        size: result.bytes,
-        original_filename: req.file.originalname
-      }
-    });
+    res.status(200).json(result);
   } catch (error) {
     console.error('Upload error:', error);
     res.status(500).json({
@@ -40,7 +30,7 @@ export const deleteFile = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Public ID is required' });
     }
 
-    await deleteFromCloudinary(public_id);
+    await deleteFromSupabase(public_id);
 
     res.status(200).json({
       success: true,
