@@ -71,6 +71,10 @@ const NewsSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  image:{
+    type: String,
+    required: true,
+  },
 
   // Execution and Timing
   publishedDate: {

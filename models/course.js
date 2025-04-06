@@ -66,6 +66,10 @@ const courseSchema = new mongoose.Schema({
     maxlength: [120, 'Title cannot exceed 120 characters'],
     unique: true
   },
+  image:{
+    type: String,
+    required: true,
+  },
   description: {
     type: [String],
     required: [true, 'Description is required'],

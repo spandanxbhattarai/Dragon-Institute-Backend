@@ -18,7 +18,7 @@ export const getAllAnnouncements = async (page = 1, limit = 10) => {
 
 
     const announcements = await AnnouncementModel.find()
-        .select("title content _id announcedDate")
+        .select("title content _id announcedDate image")
         .sort({ announcedDate: -1 })
         .skip(skip)
         .limit(limit);
