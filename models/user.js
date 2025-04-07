@@ -26,6 +26,11 @@ const examsAttendedSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  totalMarks: {
+    type: Number,
+    required: true
+  },
+
 }, { _id: false });
 
 const userSchema = new mongoose.Schema({

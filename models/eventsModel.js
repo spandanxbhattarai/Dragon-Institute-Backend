@@ -106,7 +106,6 @@ const EventSchema = new mongoose.Schema({
     type: VenueSchema,
     required: true
   },
-
   resourceMaterials: [ResourceMaterialSchema],
   extraInformation: [ExtraInformationSchema],
   isActive: {

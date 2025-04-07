@@ -1,35 +1,5 @@
 import mongoose from 'mongoose';
 
-const reviewSchema = new mongoose.Schema({
-  studentId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: [true, 'Student ID is required'],
-    ref: 'User'
-  },
-  studentName: {
-    type: String,
-    required: [true, 'Student name is required']
-  },
-  studentReview: {
-    type: String,
-    required: [true, 'Review content is required'],
-    maxlength: [1000, 'Review cannot exceed 1000 characters']
-  },
-  rating: {
-    type: Number,
-    required: [true, 'Rating is required'],
-    min: 1,
-    max: 5
-  },
-  comment: {
-    type: String,
-    maxlength: [500, 'Comment cannot exceed 500 characters']
-  },
-  date: {
-    type: Date,
-    default: Date.now
-  }
-}, { _id: false });
 
 const learningFormatSchema = new mongoose.Schema({
   name: {
@@ -101,12 +71,6 @@ const courseSchema = new mongoose.Schema({
       message: 'At least one course highlight is required'
     }
   },
-  overallRating: {
-    type: Number,
-    default: 0,
-    min: [0, 'Rating cannot be negative'],
-    max: [5, 'Rating cannot exceed 5']
-  },
   overallHours: {
     type: Number,
     required: [true, 'Overall hours are required'],
@@ -119,10 +83,6 @@ const courseSchema = new mongoose.Schema({
   category: {
     type: String,
     required: [true, 'Category is required'],
-  },
-  reviews: {
-    type: [reviewSchema],
-    default: []
   },
   learningFormat: {
     type: [learningFormatSchema],

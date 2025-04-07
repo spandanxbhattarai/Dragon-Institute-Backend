@@ -18,7 +18,5 @@ router.route('/:id')
   .patch(authenticateToken, isAdmin, courseController.updateCourse)
   .delete(authenticateToken, isAdmin, courseController.deleteCourse);
 
-router.route('/:id/reviews')
-  .post(authenticateToken, isUser, courseController.addReview);
 
 export default router;

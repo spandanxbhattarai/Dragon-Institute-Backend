@@ -123,8 +123,6 @@ export async function calculateScoreAndPercentage(questionSheetId, userAnswers, 
 
     if (question) {
       if (question.correctAnswer === userAnswer.correctAnswer) {
-        // Add full marks for correct answer
-        console.log("this is the question marks", question.marks)
         totalMarksObtained += question.marks;
         correctAnswersCount++;
       } else {
@@ -149,7 +147,8 @@ export async function calculateScoreAndPercentage(questionSheetId, userAnswers, 
     unAnsweredQuestions : unAnsweredQuestions,
     correctAnswers: correctAnswersCount,
     examId: examId,
-    totalMarksObtained: totalMarksObtained
+    totalMarksObtained: totalMarksObtained,
+    totalMarks: totalPossibleMarks
   });
 
     return {

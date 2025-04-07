@@ -157,32 +157,3 @@ export async function deleteCourse(req, res) {
   }
 }
 
-export async function addReview(req, res) {
-  try {
-    const { id } = req.params;
-    const reviewData = req.body;
-    const userId = req.body.id;
-
-    if (!reviewData.studentName || !reviewData.studentReview || !reviewData.rating) {
-      throw new Error('Student name, review content and rating are required', 400);
-    }
-    
-    if (reviewData.rating < 1 || reviewData.rating > 5) {
-      throw new Error('Rating must be between 1 and 5', 400);
-    }
-
-    const updatedCourse = await courseService.addReview(id, userId, reviewData);
-    
-    res.status(201).json({
-      status: 'success',
-      data: {
-        course: updatedCourse
-      }
-    });
-  } catch (error) {
-    res.status(error.statusCode || 400).json({
-      status: 'error',
-      message: error.message
-    });
-  }
-}

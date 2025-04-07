@@ -78,19 +78,3 @@ export async function deleteCourse(id) {
   return deletedCourse;
 }
 
-export async function addReview(id, userId, reviewData) {
-  // Add student ID to review data
-  const completeReviewData = {
-    ...reviewData,
-    studentId: userId,
-    date: new Date()
-  };
-
-  const updatedCourse = await courseRepository.addReview(id, completeReviewData);
-  
-  if (!updatedCourse) {
-    throw new Error('Course not found', 404);
-  }
-
-  return updatedCourse;
-}

@@ -39,13 +39,24 @@ export const addExamResults = async (userId, examData) => {
     throw new Error('User not found');
   }
 
+  console.log({
+    examId: examData.examId,
+    examName: examData.examName,
+    totalQuestions: examData.totalQuestions,
+    correctAnswers: examData.correctAnswers,
+    totalMarksObtained: examData.totalMarksObtained,
+    unAnsweredQuestions: examData.unAnsweredQuestions,
+    totalMarks: examData.totalMarks
+  })
+
   user.examsAttended.push({
     examId: examData.examId,
     examName: examData.examName,
     totalQuestions: examData.totalQuestions,
     correctAnswers: examData.correctAnswers,
     totalMarksObtained: examData.totalMarksObtained,
-    unAnsweredQuestions: examData.unAnsweredQuestions
+    unAnsweredQuestions: examData.unAnsweredQuestions,
+    totalMarks: examData.totalMarks
   });
 
   await user.save();

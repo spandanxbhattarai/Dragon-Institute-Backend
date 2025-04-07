@@ -4,7 +4,7 @@ export async function findCoursesSummary(page = 1, limit = 10) {
   const skip = (page - 1) * limit;
   
   const courses = await Course.find({})
-    .select('title category studentsEnrolled overallRating moduleLeader overallHours price teachersCount image')
+    .select('title category studentsEnrolled moduleLeader overallHours price teachersCount image')
     .skip(skip)
     .limit(limit)
     .lean();
@@ -69,24 +69,3 @@ export async function getCourseById(id){
   return await Course.findById(id)
 }
 
-export async function addReview(id, reviewData) {
-  const course = await Course.findById(id);
-  
-  if (!course) {
-    return null;
-  }
-  
-  // Add new review
-  course.reviews.push(reviewData);
-  
-  // Recalculate overall rating
-  if (course.reviews.length === 0) {
-    course.overallRating = 0;
-  } else {
-    const sum = course.reviews.reduce((acc, review) => acc + review.rating, 0);
-    course.overallRating = parseFloat((sum / course.reviews.length).toFixed(1));
-  }
-  
-  await course.save();
-  return course;
-}

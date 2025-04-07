@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.get("/", getAdvertisements);
 router.get("/:id", getAdvertisementById);
-router.post("/", authenticateToken, isAdmin,createAdvertisement);
+router.post("/", createAdvertisement);
 router.put("/:id",authenticateToken, isAdmin, updateAdvertisement);
 router.delete("/:id", authenticateToken, isAdmin, deleteAdvertisement);
 
