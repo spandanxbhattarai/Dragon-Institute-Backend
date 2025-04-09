@@ -6,12 +6,11 @@
   "type": "module",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js",
-    "postinstall": "npm rebuild bcrypt --build-from-source"
+    "dev": "nodemon app.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.4",
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",  
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
