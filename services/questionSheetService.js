@@ -9,9 +9,9 @@ export async function getAllQuestionSheets(fields, page, pageSize) {
   }
 }
 
-export async function getQuestionSheetById(id) {
+export async function getQuestionSheetById(id, answer) {
   try {
-    const questionSheet = await questionSheetRepository.findQuestionSheetById(id);
+    const questionSheet = await questionSheetRepository.findQuestionSheetById(id, answer);
     if (!questionSheet) {
       throw new Error('Question sheet not found');
     }
@@ -99,65 +99,29 @@ export async function deleteQuestionSheet(id) {
   }
 }
 
-export async function calculateScoreAndPercentage(questionSheetId, userAnswers, userId, examTitle, examId) {
-  const questionSheet = await questionSheetRepository.findQuestionSheetsById(questionSheetId);
-  let unAnsweredQuestions = 0;
-
-  if (!questionSheet) {
-    throw new Error('Question sheet not found');
-  }
-
-  let totalMarksObtained = 0;
-  let correctAnswersCount = 0;
-  let totalPossibleMarks = 0;
-
-  // Calculate total possible marks first
-  for (const question of questionSheet.questions) {
-    totalPossibleMarks += question.marks;
-  }
-
-  // Iterate over each question from the frontend and compare with the stored data
-  for (let i = 0; i < userAnswers.length; i++) {
-    const userAnswer = userAnswers[i];
-    const question = questionSheet.questions.find(q => q.question === userAnswer.question);
-
-    if (question) {
-      if (question.correctAnswer === userAnswer.correctAnswer) {
-        totalMarksObtained += question.marks;
-        correctAnswersCount++;
-      } else {
-        // Apply negative marking for wrong answer (deduct full marks for the question)
-        if(userAnswer.correctAnswer != ""){
-        totalMarksObtained -= question.marks;
-        } else if(userAnswer.correctAnswer == ""){
-          unAnsweredQuestions = unAnsweredQuestions + 1;
-        }
-      }
-    }
-  }
-
-  // Ensure marks don't go below 0
-  totalMarksObtained = Math.max(0, totalMarksObtained);
-
-  const percentage = (totalMarksObtained / totalPossibleMarks) * 100;
-  console.log(totalMarksObtained)
-   await addExamResults(userId, { 
-    examName: examTitle, 
-    totalQuestions: questionSheet.questions.length,
-    unAnsweredQuestions : unAnsweredQuestions,
-    correctAnswers: correctAnswersCount,
-    examId: examId,
-    totalMarksObtained: totalMarksObtained,
-    totalMarks: totalPossibleMarks
+export async function saveExamResults(
+  userId,
+  examId,
+  examName,
+  totalQuestions,
+  correctAnswers,
+  totalMarksObtained,
+  totalMarks,
+  percentage,
+  unAnsweredQuestions,
+  answers
+) {
+  await addExamResults(userId, { 
+    examId,
+    examName,
+    totalQuestions,
+    correctAnswers,
+    totalMarksObtained,
+    totalMarks,
+    percentage,
+    unAnsweredQuestions,
+    answers
   });
-
-    return {
-      totalQuestions: questionSheet.questions.length,
-      correctAnswersCount,
-      totalMarksObtained,
-      totalPossibleMarks,
-      percentage
-    };
 }
 
 

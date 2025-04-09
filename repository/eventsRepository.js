@@ -13,7 +13,7 @@ export const getByMonthAndYear = async (month, year) => {
   try {
     console.log(month, year)
     return EventModel.find({ month, year })
-      .select("_id title description event_type start_date end_date");
+      .select("_id title description event_type start_date end_date organizer");
   } catch (error) {
     console.error("Error fetching events:", error);
     throw error;

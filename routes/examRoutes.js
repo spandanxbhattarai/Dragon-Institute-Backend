@@ -21,4 +21,6 @@ router.put('/:examId', examController.updateExam);
 // Delete an exam
 router.delete('/:examId', examController.deleteExam);
 
+
+
 export default router;

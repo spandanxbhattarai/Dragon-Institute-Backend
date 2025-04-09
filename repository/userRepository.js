@@ -9,6 +9,10 @@ export const createUser = async (userData) => {
 export const getUserInformation = async (userId) => {
   const user = await User.findById(userId)
   .select("-__v -password -createdAt -batch")
+  .populate({
+    path: "courseEnrolled",
+    select: "title", 
+  })
   return user
 }
 
@@ -32,22 +36,12 @@ export const updateUserStatus = async (userId, batchId, status) => {
   ).select('-password');
 };
 
-// Add exam results
+
 export const addExamResults = async (userId, examData) => {
   const user = await User.findById(userId);
   if (!user) {
     throw new Error('User not found');
   }
-
-  console.log({
-    examId: examData.examId,
-    examName: examData.examName,
-    totalQuestions: examData.totalQuestions,
-    correctAnswers: examData.correctAnswers,
-    totalMarksObtained: examData.totalMarksObtained,
-    unAnsweredQuestions: examData.unAnsweredQuestions,
-    totalMarks: examData.totalMarks
-  })
 
   user.examsAttended.push({
     examId: examData.examId,
@@ -55,8 +49,8 @@ export const addExamResults = async (userId, examData) => {
     totalQuestions: examData.totalQuestions,
     correctAnswers: examData.correctAnswers,
     totalMarksObtained: examData.totalMarksObtained,
+    totalMarks: examData.totalMarks,
     unAnsweredQuestions: examData.unAnsweredQuestions,
-    totalMarks: examData.totalMarks
   });
 
   await user.save();

@@ -21,9 +21,8 @@ export async function getAllQuestionSheets(req, res) {
 export async function getQuestionSheetById(req, res) {
   try {
     const { id} = req.params;
-    const {user} = req.query;
-    const {exam} =  req.query;
-    const questionSheet = await questionSheetService.getQuestionSheetById(id, user, exam);
+    const {answer} = req.query;
+    const questionSheet = await questionSheetService.getQuestionSheetById(id, answer);
     return res.status(200).json({
       success: true,
       data: questionSheet
@@ -115,18 +114,36 @@ export async function deleteQuestionSheet(req, res) {
   }
 }
 
-export async function submitAnswers(req, res) {
-  const { questionSheetId } = req.params;
-  const {examId} = req.params;
+export async function submitExamResults(req, res) {
+  const { examId } = req.params;
   const userId = req.user.id;
-  const { questions } = req.body; 
-  const examTitle = req.body.examTitle;
+  const { 
+    totalQuestions,
+    correctAnswersCount,
+    totalMarksObtained,
+    totalPossibleMarks,
+    percentage,
+    answers,
+    examName,
+    unAnsweredQuestions
+  } = req.body.result;
 
   try {
-    const result = await questionSheetService.calculateScoreAndPercentage(questionSheetId, questions, userId, examTitle, examId);
+    await questionSheetService.saveExamResults(
+      userId, 
+      examId,
+      examName,
+      totalQuestions,
+      correctAnswersCount,
+      totalMarksObtained,
+      totalPossibleMarks,
+      percentage,
+      unAnsweredQuestions,
+      answers
+    );
+    
     return res.json({
-      message: 'Score calculated successfully',
-      result
+      message: 'Exam results saved successfully'
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });

@@ -36,12 +36,31 @@ export async function findAllQuestionSheets(fields, page = 1, pageSize = 10) {
   }
 }
 
-export async function findQuestionSheetById(id) {
+export async function findQuestionSheetById(id, answer = "1") {
   try {
-    const questionSheet = await QuestionSheet.findById(id)
+    let questionSheet = {}
+    if(answer === "0"){
+      questionSheet = await QuestionSheet.findById(id)
     .select({
-      'questions.correctAnswer': 0 // Exclude correctAnswer field from questions
+      'questions.answers': 0, // Exclude correctAnswer field from questions
+      'questions.question': 0,
+      'questions.marks': 0,
+      'createdAt': 0,
+      'updatedAt': 0,
+      '__v':0
     });
+
+    } else if(answer != "0") {
+      questionSheet = await QuestionSheet.findById(id)
+    .select({
+      'questions.correctAnswer': 0, // Exclude correctAnswer field from questions
+      'createdAt': 0,
+      'updatedAt': 0,
+      '__v':0
+    });
+    }
+    
+    console.log(questionSheet)
 
     return questionSheet;
   } catch (error) {

@@ -7,9 +7,9 @@ const router = express.Router();
 
 router.get('/', authenticateToken, isAdmin,questionSheetController.getAllQuestionSheets);
 router.get('/:id',  questionSheetController.getQuestionSheetById);
-router.post('/', authenticateToken, isAdmin, questionSheetController.createQuestionSheet);
+router.post('/',  questionSheetController.createQuestionSheet);
 router.put('/:id',authenticateToken, isAdmin, questionSheetController.updateQuestionSheet);
 router.delete('/:id',authenticateToken, isAdmin, questionSheetController.deleteQuestionSheet);
-router.post('/:questionSheetId/submit/:examId', authenticate, questionSheetController.submitAnswers);
+router.post('/:examId/submit', authenticate, questionSheetController.submitExamResults);
 
 export default router;
