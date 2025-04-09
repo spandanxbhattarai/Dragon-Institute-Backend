@@ -3,7 +3,7 @@ services:
     name: my-node-app
     env: node
     buildCommand: npm install && npm rebuild bcrypt --build-from-source && npm run build
-    startCommand: node app.js # Changed to directly reference your app.js file
+    startCommand: node app.js
     healthCheckPath: /
     envVars:
       - key: NODE_ENV

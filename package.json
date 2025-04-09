@@ -6,16 +6,14 @@
   "type": "module",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "postinstall": "npm rebuild bcrypt --build-from-source"
   },
   "dependencies": {
-    "@google-cloud/storage": "^7.16.0",
     "@supabase/supabase-js": "^2.49.4",
     "bcrypt": "^5.1.1",
-    "cloudinary": "^2.6.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "firebase": "^11.6.0",
     "jsonwebtoken": "^9.0.2",
     "moment-timezone": "^0.5.47",
     "mongoose": "^8.12.1",
@@ -23,5 +21,8 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   }
 }
