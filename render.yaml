@@ -1,0 +1,41 @@
+services:
+  - type: web
+    name: my-node-app
+    env: node
+    buildCommand: npm install && npm run build # Adjust if you have a different build process
+    startCommand: npm start # Adjust if you have a different start command
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8000
+      # MongoDB connection
+      - key: MONGO_URI
+        value: mongodb+srv://spandanbhattarai79:spandan123@spandan.ey3fvll.mongodb.net/
+      # JWT Secret
+      - key: JWT_SECRET
+        value: febeaaca63307d3d01b84409ccaa020f2f538e4150a54a68f5150f65ef894968bb8c29174474e0db0b8fe62a2b8c32ed17a480326fa22d810165c00e62686467
+      # Admin credentials
+      - key: ADMIN_NAME
+        value: System Administrator
+      - key: ADMIN_EMAIL
+        value: admin@gmail.com
+      - key: ADMIN_PHONE
+        value: "1234567890"
+      - key: ADMIN_PASSWORD
+        value: admin@123
+      - key: ADMIN_CITIZENSHIP_URL
+        value: https://example.com/admin-citizenship.jpg
+      # Cloudinary configuration
+      - key: CLOUDINARY_CLOUD_NAME
+        value: dmgdolxs0
+      - key: CLOUDINARY_API_KEY
+        value: 582247455138531
+      - key: CLOUDINARY_API_SECRET
+        value: 6CLzsm-sXvcp6smQWLO4JxcICDg
+      # Supabase configuration
+      - key: SUPABASE_URL
+        value: https://gyfhwcucgzqzorqmyemk.supabase.co
+      - key: SUPABASE_ANON_KEY
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5Zmh3Y3VjZ3pxem9ycW15ZW1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM5NjM2MDcsImV4cCI6MjA1OTUzOTYwN30.41RYueSusOMIX-3rk1PFUNZ0PCyD-3ldaLKMFuTCOds
