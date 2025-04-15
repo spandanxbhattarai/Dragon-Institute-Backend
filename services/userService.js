@@ -15,7 +15,7 @@ export const searchUsers = async (searchTerm, pagination) => {
     throw new Error('Search term must be at least 2 characters');
   }
 
-  // Execute search
+  // Execute  search
   return await userRepository.searchUsersByFullname(searchTerm, pagination);
 };
 

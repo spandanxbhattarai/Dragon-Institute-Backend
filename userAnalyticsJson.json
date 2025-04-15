@@ -1,0 +1,271 @@
+{
+    "info": {
+      "_postman_id": "a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890",
+      "name": "Analytics Tracking API",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Record Visit",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"isNewVisitor\": true,\n  \"source\": \"google\"\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          },
+          "url": {
+            "raw": "{{base_url}}/api/analytics/visits",
+            "host": [
+              "{{base_url}}"
+            ],
+            "path": [
+              "api",
+              "analytics",
+              "visits"
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Record Subscriber",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          },
+          "url": {
+            "raw": "{{base_url}}/api/analytics/subscribers",
+            "host": [
+              "{{base_url}}"
+            ],
+            "path": [
+              "api",
+              "analytics",
+              "subscribers"
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Record Enrollment (Free)",
+        "request": {
+          "method": "PATCH",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          },
+          "url": {
+            "raw": "{{base_url}}/api/analytics/enrollments?plan=free",
+            "host": [
+              "{{base_url}}"
+            ],
+            "path": [
+              "api",
+              "analytics",
+              "enrollments"
+            ],
+            "query": [
+              {
+                "key": "plan",
+                "value": "free"
+              }
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Record Enrollment (Half)",
+        "request": {
+          "method": "PATCH",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          },
+          "url": {
+            "raw": "{{base_url}}/api/analytics/enrollments?plan=half",
+            "host": [
+              "{{base_url}}"
+            ],
+            "path": [
+              "api",
+              "analytics",
+              "enrollments"
+            ],
+            "query": [
+              {
+                "key": "plan",
+                "value": "half"
+              }
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Record Enrollment (Full)",
+        "request": {
+          "method": "PATCH",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          },
+          "url": {
+            "raw": "{{base_url}}/api/analytics/enrollments?plan=full",
+            "host": [
+              "{{base_url}}"
+            ],
+            "path": [
+              "api",
+              "analytics",
+              "enrollments"
+            ],
+            "query": [
+              {
+                "key": "plan",
+                "value": "full"
+              }
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get Monthly Analytics",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "{{base_url}}/api/analytics/monthly?month=6&year=2023",
+            "host": [
+              "{{base_url}}"
+            ],
+            "path": [
+              "api",
+              "analytics",
+              "monthly"
+            ],
+            "query": [
+              {
+                "key": "month",
+                "value": "6"
+              },
+              {
+                "key": "year",
+                "value": "2023"
+              }
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get Yearly Analytics",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "{{base_url}}/api/analytics/yearly?year=2023",
+            "host": [
+              "{{base_url}}"
+            ],
+            "path": [
+              "api",
+              "analytics",
+              "yearly"
+            ],
+            "query": [
+              {
+                "key": "year",
+                "value": "2023"
+              }
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get All Analytics",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "{{base_url}}/api/analytics/",
+            "host": [
+              "{{base_url}}"
+            ],
+            "path": [
+              "api",
+              "analytics",
+              ""
+            ]
+          }
+        },
+        "response": []
+      }
+    ],
+    "variable": [
+      {
+        "key": "base_url",
+        "value": "http://localhost:3000"
+      }
+    ]
+  }

@@ -1,0 +1,171 @@
+{
+    "info": {
+      "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "name": "Exam Performance Analytics API",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+      "description": "Postman collection for testing Exam Performance Analytics APIs"
+    },
+    "item": [
+      {
+        "name": "Initialize Performance Record",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n    \"batchId\": \"BATCH001\",\n    \"academicYear\": \"2023-2024\"\n}"
+          },
+          "url": {
+            "raw": "{{base_url}}/api/performance/initialize",
+            "host": ["{{base_url}}"],
+            "path": ["api", "performance", "initialize"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Update Student Performance",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n    \"batchId\": \"BATCH001\",\n    \"academicYear\": \"2023-2024\",\n    \"studentId\": \"STU001\",\n    \"percentage\": 85.5\n}"
+          },
+          "url": {
+            "raw": "{{base_url}}/api/performance/update",
+            "host": ["{{base_url}}"],
+            "path": ["api", "performance", "update"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get Performance by Year",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "{{base_url}}/api/performance/year/2023-2024",
+            "host": ["{{base_url}}"],
+            "path": ["api", "performance", "year", "2023-2024"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get Performance by ID",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "{{base_url}}/api/performance/{{performance_id}}",
+            "host": ["{{base_url}}"],
+            "path": ["api", "performance", "{{performance_id}}"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get Yearly Summary",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "{{base_url}}/api/performance/summary/2023-2024",
+            "host": ["{{base_url}}"],
+            "path": ["api", "performance", "summary", "2023-2024"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Check Previous Years Data",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "{{base_url}}/api/performance/check-previous/2023-2024",
+            "host": ["{{base_url}}"],
+            "path": ["api", "performance", "check-previous", "2023-2024"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Cleanup Previous Years Data",
+        "request": {
+          "method": "DELETE",
+          "header": [],
+          "url": {
+            "raw": "{{base_url}}/api/performance/cleanup/2023-2024",
+            "host": ["{{base_url}}"],
+            "path": ["api", "performance", "cleanup", "2023-2024"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get All Performance Data",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "{{base_url}}/api/performance",
+            "host": ["{{base_url}}"],
+            "path": ["api", "performance"]
+          }
+        },
+        "response": []
+      }
+    ],
+    "variable": [
+      {
+        "key": "base_url",
+        "value": "http://localhost:5000",
+        "description": "Base URL for the API"
+      },
+      {
+        "key": "performance_id",
+        "value": "REPLACE_WITH_ACTUAL_ID",
+        "description": "Replace with actual performance record ID from initialize response"
+      }
+    ],
+    "event": [
+      {
+        "listen": "prerequest",
+        "script": {
+          "exec": [
+            "console.log('Setting up test environment');"
+          ],
+          "type": "text/javascript"
+        }
+      },
+      {
+        "listen": "test",
+        "script": {
+          "exec": [
+            "pm.test(\"Status code is 200\", function () {",
+            "    pm.response.to.have.status(200);",
+            "});",
+            "",
+            "pm.test(\"Response time is less than 500ms\", function () {",
+            "    pm.expect(pm.response.responseTime).to.be.below(500);",
+            "});"
+          ],
+          "type": "text/javascript"
+        }
+      }
+    ],
+    "protocolProfileBehavior": {}
+  }

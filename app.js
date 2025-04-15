@@ -15,6 +15,8 @@ import { scheduleMeetingCleanup } from './scheduler/meetingCleanUp.js';
 import batchRoutes from "./routes/batchRoutes.js"
 import uploadRoutes from "./routes/fileRoutes.js"
 import feedbackRouter from "./routes/feedBackRoutes.js"
+import examPerformanceRoutes from "./routes/examPerformanceRoutes.js"
+import userAnalyticsRoutes from "./routes/userAnalyticsRoutes.js"
 
 dotenv.config();
 
@@ -54,6 +56,8 @@ app.use("/api/classMaterial", classMaterialRoutes)
 app.use('/api/batches', batchRoutes);
 app.use('/api/files', uploadRoutes);
 app.use('/api/feedbacks', feedbackRouter);
+app.use('/api/performance', examPerformanceRoutes);
+app.use('/api/analytics', userAnalyticsRoutes);
 
 
 
