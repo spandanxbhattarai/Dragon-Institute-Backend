@@ -3,6 +3,7 @@ import {
     getFeedbacks as getFeedbacksService,
     getPositiveFeedbacks as getPositiveFeedbacksService
   } from '../services/feedBackService.js';
+  import {deleteFeedbackService} from '../services/feedBackService.js';
   
   export const createFeedback = async (req, res) => {
     try {
@@ -51,6 +52,25 @@ import {
       res.status(error.statusCode || 500).json({
         status: 'error',
         message: error.message
+      });
+    }
+  };
+
+  
+  export const deleteFeedback = async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      await deleteFeedbackService(id);
+      
+      res.json({
+        success: true,
+        message: 'Feedback deleted successfully'
+      });
+    } catch (error) {
+      res.status(error.message === 'Feedback not found' ? 404 : 400).json({
+        success: false,
+        message: error.message || 'Failed to delete feedback'
       });
     }
   };

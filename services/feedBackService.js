@@ -3,9 +3,11 @@ import {
     getFeedbacks as getFeedbacksRepo,
     getPositiveFeedbacks as getPositiveFeedbacksRepo,
     countFeedbacks as countFeedbacksRepo,
-    countPositiveFeedbacks as countPositiveFeedbacksRepo
+    countPositiveFeedbacks as countPositiveFeedbacksRepo,
   } from '../repository/feedbackRepository.js';
+  import {deleteFeedback} from '../repository/feedbackRepository.js';
   import AppError from '../utils/ErrorHandling/feedBackError.js';
+  import mongoose from 'mongoose';
   
   export const createFeedback = async (feedbackData) => {
     try {
@@ -71,4 +73,19 @@ import {
     } catch (error) {
       throw error;
     }
+  };
+
+  
+  export const deleteFeedbackService = async (feedbackId) => {
+    if (!mongoose.Types.ObjectId.isValid(feedbackId)) {
+      throw new Error('Invalid feedback ID');
+    }
+    
+    const deletedFeedback = await deleteFeedback(feedbackId);
+    
+    if (!deletedFeedback) {
+      throw new Error('Feedback not found');
+    }
+    
+    return deletedFeedback;
   };

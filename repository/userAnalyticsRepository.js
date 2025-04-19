@@ -63,13 +63,16 @@ export const updateUtmSource = async (month, year, source) => {
     return updated;
   };
 
-export const incrementSubscribers = async (month, year) => {
-  return await Analytics.findOneAndUpdate(
-    { month, year },
-    { $inc: { subscribersGain: 1 } },
-    { new: true, upsert: true }
-  );
-};
+  export const incrementSubscribers = async (month, year) => {
+    const result = await Analytics.updateOne(
+      { month, year },
+      { $inc: { subscribersGain: 1 } },
+      { upsert: true }
+    );
+  
+    return result.modifiedCount;
+  };
+  
 
 export const incrementEnrollment = async (month, year, planType) => {
   const field = `enrolledPlan.${planType}`;

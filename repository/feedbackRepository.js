@@ -27,3 +27,9 @@ export const countFeedbacks = async () => {
 export const countPositiveFeedbacks = async () => {
   return await Feedback.countDocuments({ rating: { $gte: 4 } });
 };
+
+
+export const deleteFeedback = async (feedbackId) => {
+  const result = await Feedback.findByIdAndDelete(feedbackId);
+  return result;
+};

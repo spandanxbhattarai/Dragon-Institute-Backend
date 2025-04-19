@@ -32,7 +32,12 @@ import {
     try {
       const { month, year } = getCurrentMonthYear();
       const result = await trackSubscriber(month, year);
-      res.status(200).json(result);
+      if(result == 1){
+        res.status(200).json({message: "Subscriber Recorded Sucessfully"});
+      } else {
+        res.status(200).json({message: "Couldnt Record Subscriber"});
+      }
+      
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
