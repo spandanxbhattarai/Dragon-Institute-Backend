@@ -10,27 +10,74 @@ import {
 getPreviousYearsData
 } from '../services/examPerformanceService.js';
 
-export async function handleInitializePerformanceRecord(req, res) {
-  try {
-    const { batchId, academicYear, examId } = req.body;
-    const record = await initializePerformanceRecord(batchId, academicYear, examId);
-    res.status(201).json(record);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+function getCurrentAcademicYear() {
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth(); // 0-indexed, so January is 0, February is 1, etc.
+  
+  // Assuming academic year starts in August/September and runs until next year July
+  // Adjust these months based on your specific academic calendar
+  if (currentMonth >= 7) { // August onwards (since January is 0, August is 7)
+    return `${currentYear}-${currentYear + 1}`;
+  } else {
+    return `${currentYear - 1}-${currentYear}`;
   }
 }
 
-export async function handleUpdateStudentPerformance(req, res) {
+export async function handleInitializePerformanceRecord(examData) {
   try {
-    const { studentId, percentage, examId } = req.body;
+    const { batches, examId } = examData;
+    const academicYear = getCurrentAcademicYear(); 
+    const records = [];
+    const errors = [];
+
+    for (const batchId of batches) {
+      try {
+        const record = await initializePerformanceRecord(batchId, academicYear, examId);
+        records.push(record);
+      } catch (batchError) {
+        errors.push({ batchId, error: batchError.message });
+      }
+    }
+
+    if (records.length !== batches.length) {
+      return {
+        success: false,
+        message: "Could not record some exam performances",
+        recordedCount: records.length,
+        totalBatches: batches.length,
+        errors
+      };
+    }
+    
+    return {
+      success: true, 
+      message: "Successfully recorded the exam performance",
+      recordedCount: records.length
+    };
+  } catch (error) {
+    // This will catch any errors in destructuring or other operations
+    throw new Error(`Failed to record exam performance: ${error.message}`);
+  }
+}
+
+export async function handleUpdateStudentPerformance(examDetails) {
+  try {
+    const { studentId, percentage, examId } = examDetails;
     const updatedRecord = await updateStudentPerformance(
       examId,
       studentId, 
       percentage
     );
-    res.json(updatedRecord);
+    if(!updatedRecord){
+      throw new Error(`Failed to record student performance`);
+    }
+    return {
+      success: true, 
+      message: "Successfully recorded the student performance",
+    };
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    throw new Error(`Failed to record student performance: ${error.message}`);
   }
 }
 

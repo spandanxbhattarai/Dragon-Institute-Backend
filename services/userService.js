@@ -2,6 +2,7 @@ import * as userRepository from '../repository/userRepository.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
+import { recordEnrollment } from '../controllers/userAnalyticsController.js';
 
 dotenv.config();
 
@@ -56,6 +57,9 @@ export const verifyUser = async (userId, batchId, currentUser) => {
     if (!updatedUser) {
       throw new Error('User not found');
     }
+    const plan = updatedUser.plan;
+
+    await recordEnrollment(plan);
 
     return {
       success: true,

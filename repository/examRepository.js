@@ -1,9 +1,15 @@
 import Exam from '../models/exams.js';
 import moment from "moment-timezone";
 import {validateUserBatch, getAttendedExamIds, processExams} from "../services/examService.js"
+import { handleInitializePerformanceRecord } from '../controllers/examPerformanceController.js';
 
 export const createExam = async (examData) => {
-    return await Exam.create(examData);
+    const result = await Exam.create(examData);
+    await handleInitializePerformanceRecord({
+      batches: result.batches,
+      examId: result._id
+  })
+  return result;
 };
 
 export const findExamsByIds = async (examIds) => {

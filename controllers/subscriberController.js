@@ -4,6 +4,7 @@ import {
     removeSubscriber,
     getSubscriberByName
   } from '../services/subscriberService.js';
+  import { recordSubscriber } from './userAnalyticsController.js';
   
   export const createSubscriber = async (req, res) => {
     try {
@@ -16,8 +17,6 @@ import {
       const subscriber = await addSubscriber(email);
       if(subscriber){
       res.status(201).json({message: "Subscriber Added Sucessfully"});
-      } else {
-        res.status(500).json({ message: "Couldnt Add Subscriber" });
       }
     } catch (error) {
       if (error.message === 'Email already subscribed') {

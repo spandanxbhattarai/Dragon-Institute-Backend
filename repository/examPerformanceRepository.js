@@ -1,4 +1,5 @@
 import { ExamPerformance } from '../models/examPerformanceModel.js';
+import mongoose from 'mongoose';
 
 export async function createInitialPerformanceRecord(batchId, academicYear, examId) {
   const newRecord = new ExamPerformance({
@@ -12,8 +13,14 @@ export async function createInitialPerformanceRecord(batchId, academicYear, exam
   return await newRecord.save();
 }
 
-export async function findPerformanceByExamId( examId) {
-  return await ExamPerformance.findOne({ examId });
+export async function findPerformanceByExamId(examId, batchId) {
+  const result =  await ExamPerformance.findOne({ examId, batchId });
+  return result;
+}
+
+export async function findPerformanceFromExamId(examId) {
+  const result =  await ExamPerformance.findOne({ examId});
+  return result;
 }
 
 export async function findPerformanceById(id) {

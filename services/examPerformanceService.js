@@ -8,19 +8,23 @@ import {
   checkPreviousYearsRecords,
   deleteAllExceptCurrentYear,
   getAllPerformanceRecords,
-  getPreviousYearsRecords
+  getPreviousYearsRecords,
+  findPerformanceFromExamId
 } from '../repository/examPerformanceRepository.js';
 
 export async function initializePerformanceRecord(batchId, academicYear, examId) {
-  const existingRecord = await findPerformanceByExamId(examId);
+
+  const existingRecord = await findPerformanceByExamId(examId, batchId);
+
   if (existingRecord) {
     throw new Error('Performance record for this exam already exists');
   }
+  
   return await createInitialPerformanceRecord(batchId, academicYear, examId);
 }
 
 export async function updateStudentPerformance(examId, studentId, percentage) {
-  const performanceRecord = await findPerformanceByExamId(examId);
+  const performanceRecord = await findPerformanceFromExamId(examId);
   
   if (!performanceRecord) {
     throw new Error('Performance record not found for this exam');

@@ -15,7 +15,6 @@ import { ExamPerformance } from '../models/examPerformanceModel.js';
 import Exam from '../models/exams.js';
 import User from '../models/user.js';
 
-
 const router = express.Router();
 
 // Initialize a new performance record (for a new academic year)
@@ -42,10 +41,7 @@ router.delete('/cleanup/:academicYear', handleCleanupPreviousYearsData);
 // Get all performance data (for analytics)
 router.get('/getByBatchId/:batchId', handleGetAllPerformanceData);
 
-
 router.get('/getPreviousYearRecords/:academicYear', getPreviousYearData);
-
-
 
 router.post('/seed-performance-data', async (req, res) => {
   try {

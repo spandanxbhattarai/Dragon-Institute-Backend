@@ -6,6 +6,7 @@ export const createExam = async (examData) => {
     if (!examData.batches || examData.batches.length === 0) {
         throw new ValidationError('At least one batch must be specified');
     }
+
     return await examRepository.createExam(examData);
 };
 

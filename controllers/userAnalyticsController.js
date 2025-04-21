@@ -28,34 +28,33 @@ import {
     }
   };
   
-  export const recordSubscriber = async (req, res) => {
+  export const recordSubscriber = async () => {
     try {
       const { month, year } = getCurrentMonthYear();
       const result = await trackSubscriber(month, year);
       if(result == 1){
-        res.status(200).json({message: "Subscriber Recorded Sucessfully"});
+        return({message: "Subscriber Recorded Sucessfully"});
       } else {
-        res.status(200).json({message: "Couldnt Record Subscriber"});
+        throw new Error('Could not record subscriber');
       }
       
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      throw new Error('Could not record the subscriber');
     }
   };
   
-  export const recordEnrollment = async (req, res) => {
+  export const recordEnrollment = async (plan, res) => {
     try {
       const { month, year } = getCurrentMonthYear();
-      const { plan } = req.query;
       
       if (!plan) {
         return res.status(400).json({ message: 'Plan type is required as query parameter' });
       }
       
       const result = await trackEnrollment(month, year, plan.toLowerCase());
-      res.status(200).json(result);
+      return({message : "Sucessfully Recorded Enrolled Course"})
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      throw new Error('Could not record the course enrollment');
     }
   };
   

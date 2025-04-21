@@ -2,7 +2,6 @@ import { Router } from 'express';
 import {
   recordVisit,
   recordSubscriber,
-  recordEnrollment,
   getMonthlyAnalytics,
   getYearlyAnalytics,
   getAllAnalytics
@@ -13,7 +12,6 @@ const router = Router();
 
 router.post('/visits', recordVisit);
 router.post('/subscribers', recordSubscriber);
-router.patch('/enrollments', recordEnrollment);
 router.get('/monthly', getMonthlyAnalytics);
 router.get('/yearly', getYearlyAnalytics);
 router.get('/', getAllAnalytics);

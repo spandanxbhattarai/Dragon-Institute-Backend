@@ -1,5 +1,6 @@
 import * as questionSheetRepository from '../repository/questionSheetRepository.js';
 import { addExamResults } from '../repository/userRepository.js';
+import { handleUpdateStudentPerformance } from '../controllers/examPerformanceController.js';
 
 export async function getAllQuestionSheets(fields, page, pageSize) {
   try {
@@ -122,6 +123,12 @@ export async function saveExamResults(
     unAnsweredQuestions,
     answers
   });
+
+  const examDetails = { studentId : userId, percentage, examId }
+
+  await handleUpdateStudentPerformance(examDetails);
+
+  return("Result ucessfully recorded")
 }
 
 

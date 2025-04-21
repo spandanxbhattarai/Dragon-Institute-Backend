@@ -5,7 +5,7 @@ import {
     subscriberExists,
     getSubscriberFromName
   } from '../repository/subsciberRepository.js';
-  import { trackSubscriber } from './userAnalyticsService.js';
+import {recordSubscriber} from "../controllers/userAnalyticsController.js"
   
   export const addSubscriber = async (email) => {
     if (await subscriberExists(email)) {
@@ -15,7 +15,7 @@ import {
     const newSubscriber = await createSubscriber(email);
     
     // Track the subscription in analytics
-    await trackSubscriber();
+    await recordSubscriber();
     
     return newSubscriber;
   };
