@@ -24,7 +24,10 @@ export async function findPerformanceFromExamId(examId) {
 }
 
 export async function findPerformanceById(id) {
-  return await ExamPerformance.findById(id);
+  return await ExamPerformance.findById(id).populate({
+  path: "highestScorers.studentId",
+  select: "_id fullname" 
+})
 }
 
 export async function findPerformanceByAcademicYear(academicYear, batchId) {
@@ -34,7 +37,10 @@ export async function findPerformanceByAcademicYear(academicYear, batchId) {
 }).populate({
   path: 'batchId',
   select: 'batch_name _id',
-});
+})  .populate({
+  path: "highestScorers.studentId",
+  select: "_id fullname" 
+})
 }
 
 export async function findYearlySummary(academicYear, batchId) {
@@ -44,7 +50,10 @@ export async function findYearlySummary(academicYear, batchId) {
 }).populate({
   path: 'batchId',
   select: 'batch_name _id',
-});
+})  .populate({
+  path: "highestScorers.studentId",
+  select: "_id fullname" 
+})
 }
 
 export async function updatePerformanceRecord(id, updateData) {
@@ -72,7 +81,15 @@ export async function getPreviousYearsRecords(academicYear, page = 1, limit = 10
 
   const [totalCount, records] = await Promise.all([
     ExamPerformance.countDocuments(query),
-    ExamPerformance.find(query).skip(skip).limit(limit).lean(),
+    ExamPerformance.find(query)
+    .populate({
+      path: "highestScorers.studentId",
+      select: "_id fullname" 
+    })
+    .skip(skip)
+    .limit(limit)
+    .lean()
+  
   ]);
 
   const totalPages = Math.ceil(totalCount / limit);
