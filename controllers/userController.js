@@ -3,9 +3,9 @@ import * as userService from '../services/userService.js';
 // Register a new user
 export const register = async (req, res) => {
   try {
-    const { fullname, role, email, phone, password, citizenshipImageUrl, plan, courseEnrolled } = req.body;
+    const { fullname, role, email, phone, password, citizenshipImageUrl, plan, courseEnrolled, payementImage} = req.body;
     
-    if (!fullname || !role || !email || !phone || !password || !citizenshipImageUrl || !plan || !courseEnrolled) {
+    if (!fullname || !role || !email || !phone || !password || !citizenshipImageUrl || !plan || !courseEnrolled ||!payementImage) {
       return res.status(400).json({ 
         success: false, 
         message: 'All fields are required' 
@@ -20,6 +20,7 @@ export const register = async (req, res) => {
       password,
       citizenshipImageUrl,
       plan,
+      payementImage,
       courseEnrolled
     });
 

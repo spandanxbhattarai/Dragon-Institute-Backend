@@ -78,10 +78,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-  amountPayed:{
-    type: Number,
-    required: false
-  },
 
   plan: {
     type: String,
