@@ -76,6 +76,28 @@ export const verifyUser = async (userId, batchId, currentUser) => {
   }
 };
 
+export const updateUserPlanService = async (userId, paymentImage, plan, planUpgradedFrom) => {
+  // Validate input
+  if (!paymentImage || !plan ||!planUpgradedFrom) {
+    throw new Error('Payment image and plan are required');
+  }
+
+  const validPlans = ['full', 'half', 'free'];
+  if (!validPlans.includes(plan)) {
+    throw new Error('Invalid plan specified');
+  }
+
+  // Check if user exists
+  const existingUser = await userRepository.findUserById(userId);
+  if (!existingUser) {
+    throw new Error('User not found');
+  }
+
+  // Update user
+  const updatedUser = await userRepository.updateUserPlanAndPayment(userId, paymentImage, plan, planUpgradedFrom);
+  return updatedUser;
+};
+
 // User login
 export const loginUser = async (email, password) => {
   try {
@@ -98,7 +120,7 @@ export const loginUser = async (email, password) => {
         id: user._id,
         // email: user.email,
         role: user.role,
-        // plan: user.plan,
+        plan: user.plan,
         // courseEnrolled: user.courseEnrolled 
       },
       process.env.JWT_SECRET,
@@ -113,7 +135,8 @@ export const loginUser = async (email, password) => {
         fullname: user.fullname,
         email: user.email,
         role: user.role,
-        batch: user.batch
+        batch: user.batch,
+        plan: user.plan
       }
     };
   } catch (error) {

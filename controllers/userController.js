@@ -1,11 +1,11 @@
 import * as userService from '../services/userService.js';
-
+import { ErrorResponse } from '../utils/ErrorHandling/errrorResponse.js';
 // Register a new user
 export const register = async (req, res) => {
   try {
-    const { fullname, role, email, phone, password, citizenshipImageUrl, plan, courseEnrolled, payementImage} = req.body;
+    const { fullname, role, email, phone, password, citizenshipImageUrl, plan, courseEnrolled, paymentImage} = req.body;
     
-    if (!fullname || !role || !email || !phone || !password || !citizenshipImageUrl || !plan || !courseEnrolled ||!payementImage) {
+    if (!fullname || !role || !email || !phone || !password || !citizenshipImageUrl || !plan || !courseEnrolled ||!paymentImage) {
       return res.status(400).json({ 
         success: false, 
         message: 'All fields are required' 
@@ -20,7 +20,7 @@ export const register = async (req, res) => {
       password,
       citizenshipImageUrl,
       plan,
-      payementImage,
+      paymentImage: [paymentImage],
       courseEnrolled
     });
 
@@ -279,5 +279,34 @@ export const resetPassword = async (req, res) => {
       success: false, 
       message: 'Error resetting password' 
     });
+  }
+};
+
+export const updateUserPlan = async (req, res, next) => {
+  try {
+    const { paymentImage, plan, planUpgradedFrom } = req.body;
+    const userId = req.params.id;
+
+    // Validate that only allowed fields are present
+    const allowedFields = ['paymentImage', 'plan', 'planUpgradedFrom'];
+    const receivedFields = Object.keys(req.body);
+    const invalidFields = receivedFields.filter(field => !allowedFields.includes(field));
+
+    if (invalidFields.length > 0) {
+      return next(new ErrorResponse(`Invalid fields: ${invalidFields.join(', ')}`, 400));
+    }
+
+    const updatedUser = await userService.updateUserPlanService(userId, paymentImage, plan, planUpgradedFrom);
+    if(updatedUser){
+    res.status(200).json({
+      success: true,
+      message: "Plan Changed Sucessfully"
+    });
+  } else{
+    return next(new ErrorResponse(`Cannot Update the plan`, 400));
+  }
+
+  } catch (error) {
+    next(error);
   }
 };

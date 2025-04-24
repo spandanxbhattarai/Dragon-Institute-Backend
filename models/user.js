@@ -74,11 +74,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  payementImage: {
-    type: String,
+  paymentImage: {
+    type: [[String]],
     required: false
   },
-
+  planUpgradedFrom: {
+    type: String,
+    required: false
+  },  
   plan: {
     type: String,
     enum: ['full', 'half', 'free' ],

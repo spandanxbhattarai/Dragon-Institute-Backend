@@ -15,6 +15,23 @@ export const getUserInformation = async (userId) => {
   })
   return user
 }
+export const updateUserPlanAndPayment = async (userId, paymentImage, plan, planUpgradedFrom) => {
+  return await User.findByIdAndUpdate(
+    userId,
+    {
+      $push: {
+        paymentImage: [paymentImage] 
+      },
+      $set: {
+        plan,
+        planUpgradedFrom,
+        status: 'unverified'
+      }
+    },
+    { new: true, runValidators: true }
+  ).select('-password -__v'); 
+};
+
 
 // Find user by ID
 export const findUserById = async (id) => {

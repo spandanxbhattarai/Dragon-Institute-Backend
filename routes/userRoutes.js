@@ -9,7 +9,8 @@ import {
   deleteUser,
   resetPassword,
   searchUsersByFullname,
-  getUserInformation
+  getUserInformation,
+  updateUserPlan
 
 } from '../controllers/userController.js';
 import { authenticateToken, isAdmin, isUser } from '../middlewares/authMiddleware.js';
@@ -31,5 +32,6 @@ router.post('/:userId/reset-password',  authenticateToken, isAdmin, resetPasswor
 
 // User verification
 router.put('/verify/:userId/batch/:batchId',  authenticateToken, isAdmin, verifyUserStatus);
+router.put('/:id/plan', authenticateToken, isUser, updateUserPlan);
 
 export default router;
