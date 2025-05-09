@@ -6,6 +6,7 @@ export const createUser = async (userData) => {
   return await user.save();
 };
 
+
 export const getUserInformation = async (userId) => {
   const user = await User.findById(userId)
   .select("-__v -password -createdAt -batch")
@@ -90,8 +91,7 @@ export const findUnverifiedUsers = async () => {
 // Get verified users
 export const findVerifiedUsers = async () => {
   return await User.find({ 
-    status: 'verified',
-    role: 'user'
+    status: 'verified'
   }).select('-password').populate({
     path: "batch",
     select: 'batch_name _id',

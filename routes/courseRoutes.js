@@ -2,11 +2,12 @@ import express from 'express';
 import * as courseController from '../controllers/courseController.js';
 import { authenticateToken, isAdmin, isUser } from '../middlewares/authMiddleware.js';
 
+
 const router = express.Router();
 
 router.route('/')
   .get(courseController.getAllCoursesFullDetails)
-  .post( courseController.createCourse);
+  .post(authenticateToken, isAdmin, courseController.createCourse);
 
 router.route('/summary')
    .get(courseController.getAllCoursesSummary);

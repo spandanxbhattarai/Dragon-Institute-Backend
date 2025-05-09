@@ -1,4 +1,5 @@
 import Batch from '../models/batchModel.js';
+import moment from "moment-timezone";
 
 export const createBatch = async (batchData) => {
   return await Batch.create(batchData);
@@ -78,7 +79,20 @@ export const removeMeetingFromBatch = async (batchId, meetingId) => {
 };
 
 export const removeExpiredMeetings = async () => {
-  const now = new Date();
+      const nepalTime = moment().tz("Asia/Kathmandu");
+  
+      // Extract the components of Nepal time
+      const year = nepalTime.format("YYYY");
+      const month = nepalTime.format("MM");
+      const day = nepalTime.format("DD");
+      const hour = nepalTime.format("HH");
+      const minute = nepalTime.format("mm");
+      const second = nepalTime.format("ss");
+      const millisecond = nepalTime.format("SSS");
+      
+      // Format as if it were UTC time (but using Nepal's actual time components)
+      const now = `${year}-${month}-${day}T${hour}:${minute}:${second}.${millisecond}+00:00`;
+      console.log(now)
   return await Batch.updateMany(
     { 'scheduled_meetings.expiryTime': { $lt: now } },
     { $pull: { scheduled_meetings: { expiryTime: { $lt: now } } } }

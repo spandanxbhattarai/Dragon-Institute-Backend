@@ -9,19 +9,20 @@ import {
   updateMeeting,
   removeMeeting
 } from '../controllers/batchController.js';
+import { authenticateToken, isAdmin, isBoth, isUser } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
 // Batch CRUD routes
-router.post('/', createBatch);
-router.get('/', getAllBatches);
-router.get('/:id', getBatch);
-router.put('/:id', updateBatch);
-router.delete('/:id', deleteBatch);
+router.post('/',authenticateToken, isBoth, createBatch);
+router.get('/', authenticateToken, isBoth,getAllBatches);
+router.get('/:id', authenticateToken, getBatch);
+router.put('/:id', authenticateToken, isBoth, updateBatch);
+router.delete('/:id',authenticateToken, isBoth, deleteBatch);
 
 // Meeting management routes
-router.post('/:batchId/meetings', addMeeting);
-router.put('/:batchId/meetings/:meetingId', updateMeeting);
-router.delete('/:batchId/meetings/:meetingId', removeMeeting);
+router.post('/:batchId/meetings', authenticateToken, isBoth, addMeeting);
+router.put('/:batchId/meetings/:meetingId', authenticateToken, isBoth,updateMeeting);
+router.delete('/:batchId/meetings/:meetingId', authenticateToken, isBoth, removeMeeting);
 
 export default router;

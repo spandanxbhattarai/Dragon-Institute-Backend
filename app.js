@@ -18,11 +18,14 @@ import feedbackRouter from "./routes/feedBackRoutes.js"
 import examPerformanceRoutes from "./routes/examPerformanceRoutes.js"
 import userAnalyticsRoutes from "./routes/userAnalyticsRoutes.js"
 import subscriberRoutes from "./routes/subscriberRoutes.js"
+import bodyParser from 'body-parser';
+import mailRoutes from "./routes/mailRoutes.js"
 
 dotenv.config();
 
 // Initialize Express app
 const app = express();
+app.use(bodyParser.json());
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*'); // Set specific allowed origin
@@ -60,6 +63,7 @@ app.use('/api/feedbacks', feedbackRouter);
 app.use('/api/performance', examPerformanceRoutes);
 app.use('/api/analytics', userAnalyticsRoutes);
 app.use('/api/subscribers', subscriberRoutes);
+app.use('/api/mail', mailRoutes)
 
 
 

@@ -1,19 +1,123 @@
 import {
-    createClassMaterial,
-    getClassMaterialById,
-    updateClassMaterial,
-    deleteClassMaterial,
-    getPaginatedClassMaterials,
-    getAllPaginatedClassMaterials
-  } from '../repository/classMaterialRepository.js';
+  createClassMaterial,
+  getClassMaterialById,
+  updateClassMaterial,
+  deleteClassMaterial,
+  getPaginatedClassMaterials,
+  getAllPaginatedClassMaterials
+} from '../repository/classMaterialRepository.js';
+import { emailService } from '../services/mailService.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import handlebars from 'handlebars';
+
+// Configure Handlebars
+handlebars.noConflict();
+
+// Get template path
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const templatePath = path.join(__dirname, '../classMaterialNotificationTemplate.html');
+
+// Simple in-memory cache for the compiled template
+let materialTemplate = null;
+
+const loadTemplate = () => {
+  if (materialTemplate) return materialTemplate;
   
-  export const createClassMaterialService = async (materialData) => {
-    // Ensure batches is an array
-    if (!Array.isArray(materialData.batches)) {
-      materialData.batches = [materialData.batches];
+  try {
+    const templateContent = fs.readFileSync(templatePath, 'utf8');
+    
+    // Validate template size
+    if (Buffer.byteLength(templateContent, 'utf8') > 100000) {
+      throw new Error('Class material template is too large (>100KB)');
     }
-    return await createClassMaterial(materialData);
+    
+    materialTemplate = handlebars.compile(templateContent, {
+      noEscape: true,
+      strict: false
+    });
+    
+    return materialTemplate;
+  } catch (err) {
+    console.error('Error loading class material template:', err);
+    throw new Error('Failed to load class material template');
+  }
+};
+
+const formatDate = (date) => {
+  if (!date) return 'N/A';
+  return new Date(date).toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
+
+const prepareMaterialEmailContent = (materialData) => {
+  const template = loadTemplate();
+  const material = materialData.toObject ? materialData.toObject() : {...materialData};
+
+  const renderedHtml = template({
+    title: material.title,
+    description: material.description,
+    batches: material.batches || [],
+    uploadedDate: formatDate(material.created_at),
+    unsubscribeLink: 'https://yourdomain.com/unsubscribe'
+  }).replace(/\s+/g, ' ').trim();
+
+  if (Buffer.byteLength(renderedHtml, 'utf8') > 256000) {
+    console.warn('Warning: Large class material email content size may cause delivery issues');
+  }
+
+  return {
+    subject: `New Class Material: ${material.title}`,
+    html: renderedHtml
   };
+};
+
+const sendMaterialNotifications = async (material) => {
+  try {
+    const emailContent = prepareMaterialEmailContent(material);
+    console.log(`Class material email size: ${Buffer.byteLength(emailContent.html, 'utf8')} bytes`);
+    
+    // Send to each batch separately
+    const batchResults = await Promise.all(material.batches.map(async batchId => {
+      return await emailService.sendBulkEmails({
+        target: 'batch',
+        batchId: batchId,
+        subject: emailContent.subject,
+        body: emailContent.html,
+        isHtml: true
+      });
+    }));
+    
+    const totalSent = batchResults.reduce((sum, result) => sum + (result.sentCount || 0), 0);
+    console.log(`Sent material notifications to ${totalSent} recipients across ${material.batches.length} batches`);
+    
+    return batchResults;
+  } catch (err) {
+    console.error('Error sending material notifications:', err);
+    throw err;
+  }
+};
+
+export const createClassMaterialService = async (materialData) => {
+  // Ensure batches is an array
+  if (!Array.isArray(materialData.batches)) {
+    materialData.batches = [materialData.batches];
+  }
+
+  const material = await createClassMaterial(materialData);
+  
+  // Send notifications in background (don't await)
+  sendMaterialNotifications(material)
+    .catch(err => console.error('Background material notification error:', err));
+  
+  return material;
+};
   
   export const getClassMaterialByIdService = async (materialId) => {
     return await getClassMaterialById(materialId);

@@ -12,6 +12,7 @@ import {
   export const trackVisit = async (month, year, source, isNewVisitor) => {
     // First update visits/visitors
     const result = await incrementVisits(month, year, isNewVisitor);
+    console.log(result, source, isNewVisitor)
     
     // Then update UTM source if provided
     if (result && source && isNewVisitor) {

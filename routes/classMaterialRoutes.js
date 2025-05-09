@@ -7,14 +7,15 @@ import {
   getClassMaterials,
   getAllClassMaterials
 } from '../controllers/classMaterialController.js';
+import { authenticateToken, isAdmin, isBoth, isUser } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-router.get('/', getAllClassMaterials);
-router.get('/:id', getClassMaterial);
-router.post('/', createClassMaterial);
-router.put('/:id', updateClassMaterial);
-router.delete('/:id', deleteClassMaterial);
-router.get('/batch/:batchId', getClassMaterials);
+router.get('/', authenticateToken, isBoth, getAllClassMaterials);
+router.get('/:id', authenticateToken, isBoth, getClassMaterial);
+router.post('/', authenticateToken, isBoth, createClassMaterial);
+router.put('/:id',authenticateToken, isBoth, updateClassMaterial);
+router.delete('/:id',authenticateToken, isBoth, deleteClassMaterial);
+router.get('/batch/:batchId', authenticateToken, isUser,getClassMaterials);
 
 export default router;

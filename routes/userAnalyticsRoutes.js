@@ -7,14 +7,15 @@ import {
   getAllAnalytics
 } from '../controllers/userAnalyticsController.js';
 import Analytics from '../models/userAnalytics.js';
+import { authenticateToken, isAdmin} from '../middlewares/authMiddleware.js';
 
 const router = Router();
 
 router.post('/visits', recordVisit);
 router.post('/subscribers', recordSubscriber);
-router.get('/monthly', getMonthlyAnalytics);
-router.get('/yearly', getYearlyAnalytics);
-router.get('/', getAllAnalytics);
+router.get('/monthly', authenticateToken, isAdmin, getMonthlyAnalytics);
+router.get('/yearly', authenticateToken, isAdmin, getYearlyAnalytics);
+router.get('/', authenticateToken, isAdmin, getAllAnalytics);
 router.post("/postdataAnalytics", async (req, res) => {
   try {
     const {

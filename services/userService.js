@@ -1,8 +1,41 @@
 import * as userRepository from '../repository/userRepository.js';
+import { emailService } from '../services/mailService.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 import { recordEnrollment } from '../controllers/userAnalyticsController.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import handlebars from 'handlebars';
+import {incrementStudentsEnrolled} from "../repository/courseRepository.js"
+
+dotenv.config();
+
+// Configure Handlebar s
+handlebars.noConflict();
+const { compile } = handlebars;
+
+// Get template path
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const templatePath = path.join(__dirname, '../verificationConfirmationTemplate.html');
+
+// Read and compile template
+let verificationTemplate;
+try {
+  const templateContent = fs.readFileSync(templatePath, 'utf8');
+  verificationTemplate = compile(templateContent, {
+    noEscape: true,
+    strict: true,
+    preventIndent: true,
+    allowProtoMethodsByDefault: true,
+    allowProtoPropertiesByDefault: true
+  });
+} catch (err) {
+  console.error('Error loading verification template:', err);
+  throw new Error('Failed to load verification template');
+}
 
 dotenv.config();
 
@@ -36,6 +69,35 @@ export const registerUser = async (userData) => {
   try {
     userData.status = 'unverified';
     const user = await userRepository.createUser(userData);
+    
+    // Send notification email to admin
+    try {
+      const adminEmail = process.env.ADMIN_EMAIL; // Make sure to add ADMIN_EMAIL to your .env
+      if (adminEmail) {
+        const emailContent = `
+          <p>A new user has registered on the site:</p>
+          <ul>
+            <li>Name: ${user.fullname}</li>
+            <li>Email: ${user.email}</li>
+            <li>Phone: ${user.phone}</li>
+            <li>Plan: ${user.plan}</li>
+            <li>Course: ${user.courseEnrolled}</li>
+          </ul>
+          <p>Please verify the user at: ${process.env.ADMIN_DASHBOARD_URL || process.env.FRONTEND_URL}</p>
+        `;
+
+        await emailService.sendSingleEmail({
+          to: adminEmail,
+          subject: 'New User Registration - Action Required',
+          body: emailContent,
+          isHtml: true
+        });
+      }
+    } catch (emailError) {
+      console.error('Error sending admin notification email:', emailError);
+      // Don't throw error - registration succeeded even if admin email failed
+    }
+
     return {
       success: true,
       message: 'User registered successfully',
@@ -60,6 +122,28 @@ export const verifyUser = async (userId, batchId, currentUser) => {
     const plan = updatedUser.plan;
 
     await recordEnrollment(plan);
+
+    await incrementStudentsEnrolled(updatedUser.courseEnrolled)
+
+    // Send verification confirmation email
+    try {
+      const emailContent = verificationTemplate({
+        fullname: updatedUser.fullname,
+        email: updatedUser.email,
+        loginUrl: `${process.env.FRONTEND_URL}/login`, // Replace with your actual login URL
+        currentYear: new Date().getFullYear()
+      });
+
+      await emailService.sendSingleEmail({
+        to: updatedUser.email,
+        subject: 'Your Account Has Been Verified',
+        body: emailContent,
+        isHtml: true
+      });
+    } catch (emailError) {
+      console.error('Error sending verification email:', emailError);
+      // Don't throw error - verification succeeded even if email failed
+    }
 
     return {
       success: true,
@@ -233,11 +317,8 @@ export const resetUserPassword = async (userId, newPassword, currentUser) => {
     if (currentUser.role !== 'admin') {
       throw new Error('Unauthorized: Only admin can reset passwords');
     }
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(newPassword, salt);
     
-    const updatedUser = await userRepository.updateUserPassword(userId, hashedPassword);
+    const updatedUser = await userRepository.updateUserPassword(userId, newPassword);
     if (!updatedUser) {
       throw new Error('User not found');
     }
@@ -260,6 +341,39 @@ export const verifyToken = async (token) => {
     }
     
     return jwt.verify(token, process.env.JWT_SECRET);
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const basicVerification  = async (token) => {
+  try {
+    if (!token) {
+      throw new Error('No token provided');
+    }
+    
+    return jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });
+  } catch (error) {
+    throw error;
+  }
+};
+export const registerTeacher = async (teacherData) => {
+  try {
+    // Check if teacher already exists
+    const existingTeacher = await userRepository.findUserByEmail(teacherData.email);
+    if (existingTeacher) {
+      throw new Error('Teacher with this email already exists');
+    }
+
+    // Create teacher object
+    const teacher = {
+      ...teacherData,
+      role: 'teacher',
+      status: 'verified', 
+      password: teacherData.password,
+    };
+
+    return await userRepository.createUser(teacher);
   } catch (error) {
     throw error;
   }

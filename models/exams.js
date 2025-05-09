@@ -11,6 +11,7 @@ const examSchema = new mongoose.Schema({
     pass_marks: { type: Number, required: true },
     duration: { type: Number, required: true },
     negativeMarking: { type: Boolean, required: true },
+    negativeMarkingNumber: {type: Number, required: false},
     question_sheet_id: { 
         type: mongoose.Schema.Types.ObjectId,
         ref: 'QuestionSheet',

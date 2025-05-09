@@ -14,6 +14,7 @@ import Batch from '../models/batchModel.js';
 import { ExamPerformance } from '../models/examPerformanceModel.js';
 import Exam from '../models/exams.js';
 import User from '../models/user.js';
+import { authenticateToken, isAdmin, isBoth } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
@@ -24,24 +25,24 @@ router.post('/initialize', handleInitializePerformanceRecord);
 router.post('/update', handleUpdateStudentPerformance);
 
 // Get performance data by academic year
-router.get('/year/:academicYear/:batchId', handleGetPerformanceByYear);
+router.get('/year/:academicYear/:batchId', authenticateToken, isAdmin, handleGetPerformanceByYear);
 
 // Get performance data by record ID
-router.get('/:id', handleGetPerformanceById);
+router.get('/:id', authenticateToken, isAdmin, handleGetPerformanceById);
 
 // Get yearly summary (without highest scorers)
-router.get('/summary/:academicYear/:batchId', handleGetYearlySummary);
+router.get('/summary/:academicYear/:batchId', authenticateToken, isAdmin, handleGetYearlySummary);
 
 // Check if previous years data exists
-router.get('/check-previous/:academicYear', handleCheckPreviousYearsData);
+router.get('/check-previous/:academicYear', authenticateToken, isAdmin, handleCheckPreviousYearsData);
 
 // Cleanup previous years data
-router.delete('/cleanup/:academicYear', handleCleanupPreviousYearsData);
+router.delete('/cleanup/:academicYear', authenticateToken, isAdmin, handleCleanupPreviousYearsData);
 
 // Get all performance data (for analytics)
-router.get('/getByBatchId/:batchId', handleGetAllPerformanceData);
+router.get('/getByBatchId/:batchId', authenticateToken, isAdmin, handleGetAllPerformanceData);
 
-router.get('/getPreviousYearRecords/:academicYear', getPreviousYearData);
+router.get('/getPreviousYearRecords/:academicYear', authenticateToken, isAdmin, getPreviousYearData);
 
 router.post('/seed-performance-data', async (req, res) => {
   try {
@@ -87,12 +88,16 @@ router.post('/seed-performance-data', async (req, res) => {
       
       // Take random students and assign percentages (80-100%)
       const shuffledStudents = [...students].sort(() => 0.5 - Math.random());
-      for (let j = 0; j < highestScorersCount; j++) {
-        highestScorers.push({
-          studentId: shuffledStudents[j]._id,
-          percentage: Math.random() * 20 + 80 // Between 80-100%
-        });
-      }
+      const maxScorers = Math.min(highestScorersCount, shuffledStudents.length);
+for (let j = 0; j < maxScorers; j++) {
+  if (shuffledStudents[j]?._id) {
+    highestScorers.push({
+      studentId: shuffledStudents[j]._id.toString(),
+      percentage: Math.random() * 20 + 80
+    });
+  }
+}
+
 
       // Sort highest scorers by percentage (descending)
       highestScorers.sort((a, b) => b.percentage - a.percentage);

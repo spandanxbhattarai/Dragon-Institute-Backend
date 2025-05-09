@@ -1,4 +1,5 @@
-import { uploadToSupabase, deleteFromSupabase } from '../services/fileService.js';
+// controllers/fileController.js
+import { uploadToS3, deleteFromS3 } from '../services/fileService.js';
 import multer from 'multer';
 
 // Configure multer for memory storage
@@ -10,9 +11,9 @@ export const uploadFile = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
-
-    const result = await uploadToSupabase(req.file);
-
+    
+    const result = await uploadToS3(req.file);
+    
     res.status(200).json(result);
   } catch (error) {
     console.error('Upload error:', error);
@@ -29,9 +30,9 @@ export const deleteFile = async (req, res) => {
     if (!public_id) {
       return res.status(400).json({ success: false, message: 'Public ID is required' });
     }
-
-    await deleteFromSupabase(public_id);
-
+    
+    await deleteFromS3(public_id);
+    
     res.status(200).json({
       success: true,
       message: 'File deleted successfully'

@@ -1,15 +1,70 @@
 import * as userService from '../services/userService.js';
+import { uploadToS3 } from '../services/fileService.js';
 import { ErrorResponse } from '../utils/ErrorHandling/errrorResponse.js';
 // Register a new user
 export const register = async (req, res) => {
   try {
-    const { fullname, role, email, phone, password, citizenshipImageUrl, plan, courseEnrolled, paymentImage} = req.body;
+    const { fullname, role, email, phone, password, plan, courseEnrolled } = req.body;
     
-    if (!fullname || !role || !email || !phone || !password || !citizenshipImageUrl || !plan || !courseEnrolled) {
+    if (!fullname || !role || !email || !phone || !password || !plan || !courseEnrolled) {
       return res.status(400).json({ 
         success: false, 
         message: 'All fields are required' 
       });
+    }
+
+    // File validation constants
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    const ALLOWED_MIME_TYPE = 'image/png';
+
+    // Check if files were uploaded
+    if (!req.files || !req.files.citizenship) {
+      return res.status(400).json({
+        success: false,
+        message: 'Citizenship document is required'
+      });
+    }
+
+    // Validate citizenship document
+    const citizenshipFile = req.files.citizenship[0];
+    if (citizenshipFile.size > MAX_FILE_SIZE) {
+      return res.status(400).json({
+        success: false,
+        message: 'Citizenship document must be less than 5MB'
+      });
+    }
+    if (citizenshipFile.mimetype !== ALLOWED_MIME_TYPE) {
+      return res.status(400).json({
+        success: false,
+        message: 'Citizenship document must be a PNG file'
+      });
+    }
+
+    // Upload citizenship document
+    const citizenshipUploadResult = await uploadToS3(citizenshipFile);
+    const citizenshipImageUrl = citizenshipUploadResult.data.url;
+
+    // Upload payment receipt if it exists (for paid plans)
+    let paymentImageUrl = null;
+    if (req.files.paymentReceipt) {
+      const paymentFile = req.files.paymentReceipt[0];
+      
+      // Validate payment receipt
+      if (paymentFile.size > MAX_FILE_SIZE) {
+        return res.status(400).json({
+          success: false,
+          message: 'Payment receipt must be less than 5MB'
+        });
+      }
+      if (paymentFile.mimetype !== ALLOWED_MIME_TYPE) {
+        return res.status(400).json({
+          success: false,
+          message: 'Payment receipt must be a PNG file'
+        });
+      }
+
+      const paymentUploadResult = await uploadToS3(paymentFile);
+      paymentImageUrl = paymentUploadResult.data.url;
     }
 
     const result = await userService.registerUser({
@@ -20,7 +75,7 @@ export const register = async (req, res) => {
       password,
       citizenshipImageUrl,
       plan,
-      paymentImage: [paymentImage],
+      paymentImage: paymentImageUrl ? [paymentImageUrl] : [],
       courseEnrolled
     });
 
@@ -37,7 +92,8 @@ export const register = async (req, res) => {
 
     return res.status(500).json({ 
       success: false, 
-      message: 'Error registering user' 
+      message: 'Error registering user',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 };
@@ -308,5 +364,43 @@ export const updateUserPlan = async (req, res, next) => {
 
   } catch (error) {
     next(error);
+  }
+};
+
+export const registerTeacherController = async (req, res) => {
+  try {
+    const { fullname, email, phone, password, courseEnrolled, citizenshipImageUrl, plan } = req.body;
+
+    // Basic validation
+    if (!fullname || !email || !phone || !password || !courseEnrolled || !citizenshipImageUrl || !plan) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    const teacherData = {
+      fullname,
+      email,
+      phone,
+      password,
+      courseEnrolled,
+      citizenshipImageUrl,
+      plan
+    };
+
+    const teacher = await userService.registerTeacher(teacherData);
+
+if(teacher){
+    res.status(201).json({
+      message: 'Teacher registered successfully',
+    });
+  } else {
+    res.status(500).json({
+      message: 'Cannot Register Teacher',
+    });
+  }
+  } catch (error) {
+    res.status(400).json({ 
+      message: error.message || 'Error registering teacher',
+      error: error.message 
+    });
   }
 };

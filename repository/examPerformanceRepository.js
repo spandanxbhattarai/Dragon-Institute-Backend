@@ -40,7 +40,7 @@ export async function findPerformanceByAcademicYear(academicYear, batchId) {
 })  .populate({
   path: "highestScorers.studentId",
   select: "_id fullname" 
-})
+});
 }
 
 export async function findYearlySummary(academicYear, batchId) {
@@ -70,7 +70,16 @@ export async function checkPreviousYearsRecords(academicYear) {
 }
 
 export async function getAllPerformanceRecords(batchId) {
-  return await ExamPerformance.find({batchId}).select('-highestScorers');
+  return await ExamPerformance.find({batchId}).populate({
+    path: 'examId',
+    select: 'title _id',
+}).populate({
+  path: 'batchId',
+  select: 'batch_name _id',
+})  .populate({
+  path: "highestScorers.studentId",
+  select: "_id fullname" 
+});
 }
 
 export async function getPreviousYearsRecords(academicYear, page = 1, limit = 10) {
@@ -83,9 +92,15 @@ export async function getPreviousYearsRecords(academicYear, page = 1, limit = 10
     ExamPerformance.countDocuments(query),
     ExamPerformance.find(query)
     .populate({
-      path: "highestScorers.studentId",
-      select: "_id fullname" 
-    })
+      path: 'examId',
+      select: 'title _id',
+  }).populate({
+    path: 'batchId',
+    select: 'batch_name _id',
+  })  .populate({
+    path: "highestScorers.studentId",
+    select: "_id fullname" 
+  })
     .skip(skip)
     .limit(limit)
     .lean()

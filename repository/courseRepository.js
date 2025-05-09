@@ -26,6 +26,24 @@ export async function findCoursesSummary(page = 1, limit = 10) {
   };
 }
 
+export const incrementStudentsEnrolled = async (courseId) => {
+  try {
+    const updatedCourse = await Course.findByIdAndUpdate(
+      courseId,
+      { $inc: { studentsEnrolled: 1 } }, 
+      { new: true } 
+    );
+
+    if (!updatedCourse) {
+      throw new Error('Course not found');
+    }
+
+    return updatedCourse;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export async function findCoursesFullDetails(page = 1, limit = 10) {
   const skip = (page - 1) * limit;
   

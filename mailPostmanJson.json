@@ -1,0 +1,172 @@
+{
+    "info": {
+      "_postman_id": "a1b2c3d4-e5f6-7890-f1e2-d3c4b5a6f7e8",
+      "name": "Email Service API",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+      "description": "Collection for testing Email Service API with SES and SQS integration"
+    },
+    "item": [
+      {
+        "name": "Send Single Email",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n    \"to\": \"recipient@example.com\",\n    \"subject\": \"Test Single Email\",\n    \"body\": \"This is a test email sent directly via SES\"\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          },
+          "url": {
+            "raw": "{{base_url}}/api/mail/send-single",
+            "host": [
+              "{{base_url}}"
+            ],
+            "path": [
+              "api",
+              "mail",
+              "send-single"
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Send Bulk Emails",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n    \"target\": \"subscribers\",\n    \"subject\": \"Test Bulk Email\",\n    \"body\": \"This is a test bulk email queued via SQS\"\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          },
+          "url": {
+            "raw": "{{base_url}}/api/mail/send-bulk",
+            "host": [
+              "{{base_url}}"
+            ],
+            "path": [
+              "api",
+              "mail",
+              "send-bulk"
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Process Email Queue",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          },
+          "url": {
+            "raw": "{{base_url}}/api/mail/process-queue",
+            "host": [
+              "{{base_url}}"
+            ],
+            "path": [
+              "api",
+              "mail",
+              "process-queue"
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Verify Email (Sandbox Mode)",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n    \"email\": \"recipient@example.com\"\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          },
+          "url": {
+            "raw": "{{base_url}}/api/mail/verify-email",
+            "host": [
+              "{{base_url}}"
+            ],
+            "path": [
+              "api",
+              "mail",
+              "verify-email"
+            ]
+          }
+        },
+        "response": []
+      }
+    ],
+    "variable": [
+      {
+        "key": "base_url",
+        "value": "http://localhost:5000",
+        "description": "Base URL of your API"
+      }
+    ],
+    "event": [
+      {
+        "listen": "prerequest",
+        "script": {
+          "exec": [
+            "// You can add pre-request scripts here if needed"
+          ],
+          "type": "text/javascript"
+        }
+      },
+      {
+        "listen": "test",
+        "script": {
+          "exec": [
+            "// You can add tests here if needed",
+            "pm.test(\"Status code is 200\", function () {",
+            "    pm.response.to.have.status(200);",
+            "});"
+          ],
+          "type": "text/javascript"
+        }
+      }
+    ]
+  }

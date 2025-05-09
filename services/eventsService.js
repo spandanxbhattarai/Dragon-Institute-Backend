@@ -1,8 +1,90 @@
 import * as repository from '../repository/eventsRepository.js';
+import { emailService } from '../services/mailService.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import handlebars from 'handlebars';
+
+// Configure Handlebars to allow prototype access
+handlebars.noConflict();
+const { compile } = handlebars;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const templatePath = path.join(__dirname, '../eventNotificationTemplate.html');
+
+// Read and compile template with safe access options
+let emailTemplate;
+try {
+  const templateContent = fs.readFileSync(templatePath, 'utf8');
+  emailTemplate = compile(templateContent, {
+    noEscape: true,       // Allows HTML in templates
+    strict: true,         // Ensures variables exist
+    preventIndent: true,  // Prevents whitespace issues
+    allowProtoMethodsByDefault: true,
+    allowProtoPropertiesByDefault: true
+  });
+} catch (err) {
+  console.error('Error loading email template:', err);
+  throw new Error('Failed to load email template');
+}
+
+const formatDate = (date) => {
+  return new Date(date).toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
+
+const prepareEventEmailContent = (eventData) => {
+  // Convert Mongoose document to plain object if needed
+  const eventObj = eventData.toObject ? eventData.toObject() : eventData;
+  
+  const startDate = formatDate(eventObj.start_date);
+  const endDate = formatDate(eventObj.end_date);
+  const eventDate = startDate === endDate 
+    ? startDate 
+    : `${startDate} to ${endDate}`;
+
+  return {
+    subject: `New Event: ${eventObj.title}`,
+    html: emailTemplate({
+      eventTitle: eventObj.title,
+      eventDescription: eventObj.description,
+      eventDate: eventDate,
+      eventVenue: `${eventObj.venue.name}, ${eventObj.venue.address}`,
+      eventMaterials: eventObj.resourceMaterials || [],
+      eventExtraInfo: eventObj.extraInformation || [],
+      organizerName: eventObj.organizer.name,
+      organizerEmail: eventObj.organizer.email,
+      unsubscribeLink: 'https://yourdomain.com/unsubscribe'
+    })
+  };
+};
 
 export const createEvent = async (eventData) => {
-  return await repository.createEvent(eventData);
+  const event = await repository.createEvent(eventData);
+  
+  try {
+    const emailContent = prepareEventEmailContent(event);
+    console.log(`Event email size: ${Buffer.byteLength(emailContent.html, 'utf8')} bytes`);
+    await emailService.sendBulkEmails({
+      target: 'all',
+      subject: emailContent.subject,
+      body: emailContent.html,
+      isHtml: true  // Ensure this flag is passed to indicate HTML content
+    });
+  } catch (err) {
+    console.error('Error sending event notifications:', err);
+  }
+  
+  return event;
 };
+
 
 export const getEvent = async (id) => {
   const event = await repository.getEventById(id);

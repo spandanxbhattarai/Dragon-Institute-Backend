@@ -9,10 +9,13 @@
     "dev": "nodemon app.js"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.49.4",
-    "bcryptjs": "^2.4.3",  
-    "dotenv": "^16.4.7",
+    "@aws-sdk/client-s3": "^3.802.0",
+    "@aws-sdk/s3-request-presigner": "^3.802.0",
+    "aws-sdk": "^2.1692.0",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.5.0",
     "express": "^4.21.2",
+    "handlebars": "^4.7.8",
     "jsonwebtoken": "^9.0.2",
     "moment-timezone": "^0.5.47",
     "mongoose": "^8.12.1",
